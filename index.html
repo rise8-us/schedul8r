@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link rel="stylesheet" href="src/ui/style.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  </head>
+  <body>
+    <div style="padding: 4px; overflow: hidden; width: fit-content; margin: auto;">
+      <div class="schedule__container">
+        <div id="meeting_info" class="meeting__info">
+          <img class="logo" src="https://d3v0px0pttie1i.cloudfront.net/uploads/organization/logo/3296535/895ca01b.png" />
+          <div id="info_block" class="info_block" ></div>
+        </div>
+        <div id="container" class="container">
+              <span style="position: relative;">
+                <a class="branding" href="https://rise8.us" target="_blank">
+                  <p class="powered_by">POWERED BY</p>
+                  <p class="company">Risers</p>
+                </a>
+              </span>
+          <div class="selectDateTime__wrap">
+            <h3>Select a Date & Time</h3>
+            <div class="calendar__wrap">
+              <span class="calendarContainer" id="calendar" />
+            </div>
+          </div>
+          <div class="details__wrap inactive">
+            <h3>Input Details</h3>
+            <div class="details__container">
+              <div id="full_name__wrap" class="input_wrap">
+                <label for="full_name">Name: &nbsp;*</label>
+                <input id="full_name" type="text" name="full_name" minlength="2" required autocomplete="name"></input>
+              </div>
+              <div id="mail__wrap" class="input_wrap">
+                <label for="mail">Email: &nbsp;*</label>
+                <input id="mail" type="email" name="mail" minlength="5" required autocomplete="email"></input>
+              </div>
+              <div class="input_wrap">
+                <label for="question0">Please share anything that will help prepare for our meeting.</label>
+                <textarea id="question0" name="question0" style="margin-bottom: -3px;"></textarea>
+              </div>
+            </div>
+            <button id="scheduleEventButton" class="scheduleEvent">Schedule Event</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="src/ui/app.js" type="module"></script>
+  </body>
+</html>
