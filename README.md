@@ -1,7 +1,10 @@
 # Schedul8r
+
 - Connect to personal or a shared calendar to share availability for meeting with guests
+
 # Dev Setup
-1. create an apps [script project](https://developers.google.com/apps-script/guides/projects) in your Google Drive 
+
+1. create an apps [script project](https://developers.google.com/apps-script/guides/projects) in your Google Drive
 1. Get the Script Id from Project Settings page
 1. copy and `.example.clasp.json` to `.clasp.json` and update the `scriptId` with your scriptId from step 2
 1. install [clasp](https://developers.google.com/apps-script/guides/clasp)
@@ -14,3 +17,7 @@
 > clasp login
 > clasp push
 ```
+
+### deploying locally
+
+To deploy locally, execute `npm run build:push`. This will bundle up everything in the /src folder and push it to the Google App Script with the ID in your .clasp.json.
