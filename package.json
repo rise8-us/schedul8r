@@ -4,9 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "clean": "rm -rf dist",
+    "build:api": "cp ./src/appsscript.json dist/appsscript.json && cp -r ./src/backend/ dist/backend/",
     "dev": "vite",
-    "build": "vite build",
-    "build:push": "vite build && clasp push",
+    "build": "npm run clean && vite build && npm run build:api",
+    "build:push": "npm run build && clasp push",
     "preview": "vite preview"
   },
   "devDependencies": {
@@ -21,8 +23,5 @@
     "prettier": "^2.8.8",
     "vite": "^4.3.2",
     "vite-plugin-singlefile": "^0.13.5"
-  },
-  "dependencies": {
-    "eslint-plugin-prettier": "^4.2.1"
   }
 }

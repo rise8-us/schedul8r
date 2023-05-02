@@ -1,11 +1,10 @@
 const MEETINGS_FILE_NAME = "Meetings";
-const HOST_PREFRENCES_FILE_NAME = "MeetingHosts"
+const HOST_PREFRENCES_FILE_NAME = "MeetingHosts";
 
 function doGet(e) {
-    return HtmlService.createTemplateFromFile('frontend/index').evaluate();
+  return HtmlService.createTemplateFromFile("frontend/index").evaluate();
 }
 
 function include(filename) {
-    return HtmlService.createHtmlOutputFromFile(filename)
-        .getContent();
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
