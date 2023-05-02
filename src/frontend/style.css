@@ -1,496 +1,523 @@
-h1, h2, h3, h4, h5, h6, p, label, input, textarea {
-    font-family: Roboto, sans-serif;
-    margin: 0;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label,
+input,
+textarea {
+  font-family: Roboto, sans-serif;
+  margin: 0;
 }
 
 .input_wrap {
-    position: relative;
-    border: 1px solid #b2b2b2;
-    border-radius: 8px;
-    width: 480px;
+  position: relative;
+  border: 1px solid #b2b2b2;
+  border-radius: 8px;
+  width: 480px;
 }
 
 label {
-    position: absolute;
-    top: -24px;
-    left: 4px;
-    font-weight: bold;
-    font-size: 14px;
+  position: absolute;
+  top: -24px;
+  left: 4px;
+  font-weight: bold;
+  font-size: 14px;
 }
 
-input, textarea {
-    border: unset;
-    border-radius: 6px;
-    height: 24px;
-    width: calc(100% - 16px);
-    padding: 8px;
+input,
+textarea {
+  border: unset;
+  border-radius: 6px;
+  height: 24px;
+  width: calc(100% - 16px);
+  padding: 8px;
 }
 
 button {
-    padding: 8px;
-    margin: 0;
-    border: 0;
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    border: 0;
-    background-color: transparent;
-    border-radius: 50%;
-    cursor: pointer;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  padding: 8px;
+  margin: 0;
+  border: 0;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 button:hover {
-    background-color: rgba(12, 12, 12, 0.2);
-    box-shadow: 0 0 2px #12121212;
+  background-color: rgba(12, 12, 12, 0.2);
+  box-shadow: 0 0 2px #12121212;
 }
 
 button.disabled:hover {
-    box-shadow: none;
-    background-color: transparent;
-    cursor: default;
+  box-shadow: none;
+  background-color: transparent;
+  cursor: default;
 }
 
 .invalid {
-    border-color: red;
+  border-color: red;
 }
 
 .powered_by {
-    color: white;
-    font-size: 8px;
+  color: white;
+  font-size: 8px;
 }
 
 .company {
-    color: white;
-    font-size: 13px;
-    font-weight: bold;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
 }
 
 .branding {
-    background-image: linear-gradient(0deg, #800031, red);
-    position: absolute;
-    right: -58px;
-    padding: 12px 35px 8px 32px;
-    display: flex;
-    top: -21px;
-    flex-direction: column;
-    align-items: center;
-    transform: rotate(45deg) scale(1);
-    transition: transform 100ms ease-in-out;
-    text-decoration: unset;
-    cursor: pointer;
-    box-shadow: 0px 2px 12px -2px #000000FF;
+  background-image: linear-gradient(0deg, #800031, red);
+  position: absolute;
+  right: -58px;
+  padding: 12px 35px 8px 32px;
+  display: flex;
+  top: -21px;
+  flex-direction: column;
+  align-items: center;
+  transform: rotate(45deg) scale(1);
+  transition: transform 100ms ease-in-out;
+  text-decoration: unset;
+  cursor: pointer;
+  box-shadow: 0px 2px 12px -2px #000000ff;
 }
 
 .branding::before {
-    position: absolute;
-    bottom: -1px;
-    left: -1px;
-    content: '';
-    height: 7px;
-    width: 6px;
-    background: #800031;
-    transform: rotate(45deg);
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  content: "";
+  height: 7px;
+  width: 6px;
+  background: #800031;
+  transform: rotate(45deg);
 }
 
 .branding::after {
-    position: absolute;
-    bottom: 0;
-    right: -5px;
-    content: '';
-    height: 7px;
-    width: 7px;
-    background: #800031;
-    transform: rotate(45deg);
+  position: absolute;
+  bottom: 0;
+  right: -5px;
+  content: "";
+  height: 7px;
+  width: 7px;
+  background: #800031;
+  transform: rotate(45deg);
 }
 
 .branding:hover {
-    transform:  rotate(45deg) scale(1.1);
+  transform: rotate(45deg) scale(1.1);
 }
 
 .schedule__container {
-    box-shadow: 0 0 4px -1px black;
-    display: flex;
-    border-radius: 8px;
+  box-shadow: 0 0 4px -1px black;
+  display: flex;
+  border-radius: 8px;
 }
 
 .meeting__info {
-    border-right: 1px solid lightgray;
-    max-width: 273px;
+  border-right: 1px solid lightgray;
+  max-width: 273px;
 }
 
 .info_block {
-    display: flex;
-    flex-direction: column;
-    padding: 16px;
-    row-gap: 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  row-gap: 16px;
 }
 
 .info__section {
-    display: flex;
-    align-items: center;
-    column-gap: 8px;
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
 }
 
 .info {
-    color: grey;
-    font-size: 14px;
+  color: grey;
+  font-size: 14px;
 }
 
 .logo {
-    max-height: 105px;
-    padding: 32px;
-    border-bottom: 1px solid lightgray;
+  max-height: 105px;
+  padding: 32px;
+  border-bottom: 1px solid lightgray;
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    padding: 24px;
-    width: fit-content;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  width: fit-content;
 }
 
 .selectDateTime__wrap {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .inactive {
-    display: none;
+  display: none;
 }
 
 .calendar__wrap {
-    display: flex;
-    background: white;
-    width: min-content;
-    margin-top: 32px;
+  display: flex;
+  background: white;
+  width: min-content;
+  margin-top: 32px;
 }
 
 .calendarContainer {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background: inherit;
-    width: 336px;
-    min-width: 336px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: inherit;
+  width: 336px;
+  min-width: 336px;
 }
 
 .timeContainer {
-    display: flex;
-    flex-direction: column;
-    row-gap: 4px;
-    width: 100%;
-    max-width: 0;
-    overflow: hidden;
-    opacity: 0;
-    padding: 0;
-    max-height: 316px;
-    overflow-y: auto;
-    transition: max-width 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in 400ms;
+  display: flex;
+  flex-direction: column;
+  row-gap: 4px;
+  width: 100%;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  padding: 0;
+  max-height: 316px;
+  overflow-y: auto;
+  transition: max-width 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 200ms ease-in 400ms;
 }
 
 .timeContainer.enabled {
-    margin: 16px -24px 8px 0;
-    padding: 0 24px 0 16px;
-    max-width: 160px;
-    opacity: 1;
+  margin: 16px -24px 8px 0;
+  padding: 0 24px 0 16px;
+  max-width: 160px;
+  opacity: 1;
 }
 
 .time_wrap {
-    display: flex;
-    column-gap: 4px;
-    min-width: 160px;
+  display: flex;
+  column-gap: 4px;
+  min-width: 160px;
 }
 
 .time_wrap.empty {
-    height: 100%;
-    text-align: center;
-    align-items: center;
+  height: 100%;
+  text-align: center;
+  align-items: center;
 }
 
 .time_confirm_btn {
-    width: 80px;
-    border-color: red;
-    background-image: linear-gradient(0deg, #800031, red);
-    color: white;
-    font-weight: bold;
-    border-radius: 6px;
+  width: 80px;
+  border-color: red;
+  background-image: linear-gradient(0deg, #800031, red);
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
 }
 
 .time_option {
-    min-width: 160px;
-    min-height: 32px;
-    border-radius: 6px;
-    border: 1px solid;
-    border-color: #800031;
-    color: #800031;
-    font-weight: bold;
-    transition: min-width 200ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in 400ms;
+  min-width: 160px;
+  min-height: 32px;
+  border-radius: 6px;
+  border: 1px solid;
+  border-color: #800031;
+  color: #800031;
+  font-weight: bold;
+  transition: min-width 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 200ms ease-in 400ms;
 }
 
 .time_option:hover {
-    background-color: #8000311A;
-    border-color: red;
+  background-color: #8000311a;
+  border-color: red;
 }
 
 .time_option.selected {
-    min-width: 80px;
-    border-color: unset;
-    box-shadow: unset;
-    background: #5e5e5eab;
+  min-width: 80px;
+  border-color: unset;
+  box-shadow: unset;
+  background: #5e5e5eab;
 }
 
 .month {
-    padding: 24px 0px 8px 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  padding: 24px 0px 8px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .left__icon {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
-
-.weekdays, .week {
-    display: flex;
-    height: 32px;
+.weekdays,
+.week {
+  display: flex;
+  height: 32px;
 }
 
 .weekdays {
-    align-items: center;
-    text-align: center;
-    text-transform: uppercase;
+  align-items: center;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .calendarWeekdays {
-    display: flex;
-    flex-direction: column;
-    row-gap: 4px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 4px;
 }
 
-.weekday, .day {
-    flex: 1;
-    width: 32px;
+.weekday,
+.day {
+  flex: 1;
+  width: 32px;
 }
 
 .weekday {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .day {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .day__btn {
-    padding: 0;
-    height: 32px;
-    width: 32px;
-    color: rgb(61,61,61);
-    font-weight: bold;
+  padding: 0;
+  height: 32px;
+  width: 32px;
+  color: rgb(61, 61, 61);
+  font-weight: bold;
 }
 
 .today {
-    bottom: 4px;
-    height: 5px;
-    width: 5px;
-    background-image: linear-gradient(0deg, #800031, red);
-    border-radius: 50%;
-    position: absolute;
+  bottom: 4px;
+  height: 5px;
+  width: 5px;
+  background-image: linear-gradient(0deg, #800031, red);
+  border-radius: 50%;
+  position: absolute;
 }
 
 .selected {
-    background-image: linear-gradient(0deg, #800031, red);
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-    color: white;
+  background-image: linear-gradient(0deg, #800031, red);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  color: white;
 }
 
 .day__btn:hover {
-    background-color: rgb(255, 0, 0);
-    color: white;
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.4);
+  background-color: rgb(255, 0, 0);
+  color: white;
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.4);
 }
 
-.day.disabled > .day__btn, day.disabled:hover > .day__btn {
-    color: slategray;
-    font-weight: normal;
-    background: none;
-    box-shadow: none;
-    cursor: default;
+.day.disabled > .day__btn,
+.day.disabled:hover > .day__btn {
+  color: slategray;
+  font-weight: normal;
+  background: none;
+  box-shadow: none;
+  cursor: default;
 }
 
 .details__wrap {
-    display: flex;
-    flex-direction: column;
-    row-gap: 48px;
-    width: 536px;
-    min-height: 340px;
-    margin-right: -24px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 48px;
+  width: 536px;
+  min-height: 340px;
+  margin-right: -24px;
 }
 
 .details__wrap.inactive {
-    display: none;
+  display: none;
 }
 
 .details__container {
-    display: flex;
-    flex-direction: column;
-    row-gap: 32px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 32px;
 }
 
 #question0 {
-    resize: vertical;
+  resize: vertical;
 }
 
 .scheduleEvent {
-    background-image: linear-gradient(0deg, #800031, red);
-    border-radius: 20px;
-    color: white;
-    width: 136px
+  background-image: linear-gradient(0deg, #800031, red);
+  border-radius: 20px;
+  color: white;
+  width: 136px;
 }
 
 .interviewer {
-    min-height: 18px;
+  min-height: 18px;
 }
 
 .meetingType {
-    min-height: 28px;
+  min-height: 28px;
 }
 
 #meetingDuration {
-    width: 48px;
-    min-height: 16px;
+  width: 48px;
+  min-height: 16px;
 }
 
 .backButton {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    box-shadow: 0 0 4px #9d9d9d;
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  box-shadow: 0 0 4px #9d9d9d;
 }
 
 .event__scheduled {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    row-gap: 16px;
-    width: 536px;
-    height: 100%;
-    justify-content: center;
-    margin-right: -24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 16px;
+  width: 536px;
+  height: 100%;
+  justify-content: center;
+  margin-right: -24px;
 }
 
 .meetingBook {
-    padding-right: 24px;
-    text-align: center;
+  padding-right: 24px;
+  text-align: center;
 }
 
 span.ripple {
-    position: absolute;
-    border-radius: 50%;
-    transform: scale(0);
-    animation: ripple 600ms ease-in-out;
-    background-color: rgba(255, 255, 255, 0.7);
-}
-
-@keyframes ripple {
-    to {
-        transform: scale(4);
-        opacity: 0;
-    }
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 600ms ease-in-out;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 .spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 160px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 160px;
 }
 
 .spinner {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #800031;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #800031;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s ease-in-out infinite;
 }
 
 .skeleton {
-    display: block;
-    background-color: rgba(0, 0, 0, 0.13);
-    height: auto;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    transform-origin: 0px 55%;
-    position: relative;
-    border-radius: 4px / 8px;
-    overflow: hidden;
+  display: block;
+  background-color: rgba(0, 0, 0, 0.13);
+  height: auto;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  transform-origin: 0px 55%;
+  position: relative;
+  border-radius: 4px / 8px;
+  overflow: hidden;
 }
 
 .skeleton::before {
-    content: " ";
+  content: " ";
 }
 
 .skeleton::after {
-    animation: 1.6s linear 0.5s infinite normal none running skeleton-pulse;
-    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
-    content: "";
-    position: absolute;
-    transform: translateX(-100%);
-    inset: 0px;
-}
-
-@keyframes skeleton-pulse {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+  animation: 1.6s linear 0.5s infinite normal none running skeleton-pulse;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.1),
+    transparent
+  );
+  content: "";
+  position: absolute;
+  transform: translateX(-100%);
+  inset: 0px;
 }
 
 .checkmark svg {
-    width: 144px;
-    display: block;
+  width: 144px;
+  display: block;
 }
 
 .checkmark .path {
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 0;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
 }
 .checkmark .path.circle {
-    animation: dash 1.2s ease-in-out;
+  animation: dash 1.2s ease-in-out;
 }
 .checkmark .path.check {
-    stroke-dashoffset: -100;
-    animation: dash-check 1.2s .8s ease-in forwards;
+  stroke-dashoffset: -100;
+  animation: dash-check 1.2s 0.8s ease-in forwards;
 }
 
 @keyframes dash {
-    0% {
-        stroke-dashoffset: 1000;
-    }
-    100% {
-        stroke-dashoffset: 0;
-    }
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 @keyframes dash-check {
-    0% {
-        stroke-dashoffset: -100;
-    }
-    100% {
-        stroke-dashoffset: 900;
-    }
+  0% {
+    stroke-dashoffset: -100;
+  }
+  100% {
+    stroke-dashoffset: 900;
+  }
 }
 
+@keyframes skeleton-pulse {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
