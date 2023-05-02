@@ -14,6 +14,6 @@ export default defineConfig({
     plugins: [viteSingleFile(), noAttr()],
     build: {
         minify: true,
-        outDir: resolve(__dirname, 'dist/ui'),
+        outDir: resolve(__dirname, 'dist/frontend'),
     },
 });

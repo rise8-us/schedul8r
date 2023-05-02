@@ -7,7 +7,7 @@
 1. install [clasp](https://developers.google.com/apps-script/guides/clasp)
 1. login to google with clasp, you will need to update some settings in google your first time
 1. push to google
-2. 
+
 ```shell
 ## example cli commands
 > npm install @google/clasp -g
