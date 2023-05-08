@@ -48,20 +48,31 @@ function preview(meeting, start) {
 }
 
 function scheduleEvent(meeting, startTime, guestEmail) {
-  meeting.host = getMeetingHost(meeting.host);
+  let host = getMeetingHost(meeting.host);
   startTime = new Date(startTime);
+  const endTime = new Date(startTime.getTime() + meeting.duration * 60000);
+  let attendees = [host.email, guestEmail];
+
+  if (meeting.hasBotGuest) {attendees.push(BOT_EMAIL)}
 
   const calendar = getCalendar(meeting.calendar);
-  let event = calendar.createEvent(
-    meeting.title,
-    startTime,
-    new Date(startTime.getTime() + meeting.duration * 60000)
-  );
+  const resource = {
+    start: {dateTime: startTime.toISOString() },
+    end: { dateTime: endTime.toISOString() },
+    attendees: attendees.reduce((a,e) => {a.push({email: e}); return a}, []),
+    conferenceData: {
+      createRequest: {
+        requestId: Math.random().toString(36).substring(7),
+        conferenceSolutionKey : {
+            type: 'hangoutsMeet'
+        }
+      },
+    },
+    summary: meeting.title,
+    description: meeting.description,
+  };
 
-  if(meeting.hasBotGuest) event.addGuest(BOT_EMAIL)
-  event.addGuest(meeting.host.email);
-  event.addGuest(guestEmail);
-  event.setDescription(meeting.description);
+  Calendar.Events.insert(resource, calendar.getId(), { conferenceDataVersion: 1 })
 }
 
 function getFreebusyTimes({ host: { email } }, { start, end }) {
