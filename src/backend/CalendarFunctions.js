@@ -1,3 +1,4 @@
+// AppScript runs as single file in google.  All variables and methods are available to all other backend files.
 function getMeetingInfo(type) {
   type?.toLowerCase();
 
@@ -57,6 +58,7 @@ function scheduleEvent(meeting, startTime, guestEmail) {
     new Date(startTime.getTime() + meeting.duration * 60000)
   );
 
+  if(meeting.hasBotGuest) event.addGuest(BOT_EMAIL)
   event.addGuest(meeting.host.email);
   event.addGuest(guestEmail);
   event.setDescription(meeting.description);

@@ -1,4 +1,5 @@
 // For / pre v1 use.
+// AppScript runs as single file in google.  All variables and methods are available to all other backend files.
 const PERSONAL_EMAIL = "jwills@rise8.us";
 const PERSONAL_DISPLAY_NAME = "Jeffrey Wills";
 
@@ -9,6 +10,7 @@ const meetingTypes = {
     duration: 15, //minutes
     hosts: [PERSONAL_EMAIL],
     calendar: PERSONAL_EMAIL,
+    hasBotGuest: true,
     getNextHost: function () {
       return this.hosts[Math.floor(Math.random() * this.hosts.length)];
     },
@@ -23,7 +25,8 @@ const meetingTypes = {
       "akrish@rise8.us",
       "pduong@rise8.us",
     ],
-    calendar: "SWE RPI",
+    calendar: "Hiring",
+    hasBotGuest: true,
     getNextHost: function () {
       return this.hosts[Math.floor(Math.random() * this.hosts.length)];
     },
@@ -34,6 +37,7 @@ const meetingTypes = {
     duration: 90,
     hosts: [PERSONAL_EMAIL],
     calendar: PERSONAL_EMAIL,
+    hasBotGuest: true,
     getNextHost: function () {
       return this.hosts[Math.floor(Math.random() * this.hosts.length)];
     },
@@ -44,6 +48,7 @@ const meetingTypes = {
     duration: 30,
     hosts: [PERSONAL_EMAIL],
     calendar: PERSONAL_EMAIL,
+    hasBotGuest: true,
     getNextHost: function () {
       return this.hosts[Math.floor(Math.random() * this.hosts.length)];
     },
@@ -54,6 +59,7 @@ const meetingTypes = {
     duration: 60,
     hosts: [PERSONAL_EMAIL],
     calendar: PERSONAL_EMAIL,
+    hasBotGuest: true,
     getNextHost: function () {
       return this.hosts[Math.floor(Math.random() * this.hosts.length)];
     },

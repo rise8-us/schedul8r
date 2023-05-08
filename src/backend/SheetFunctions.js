@@ -1,3 +1,4 @@
+// AppScript runs as single file in google.  All variables and methods are available to all other backend files.
 function getRandomHost(meetingObj) {
     const hosts = meetingObj.hosts.split(",")
     const host = hosts[Math.floor(Math.random() * hosts.length)].trim();
