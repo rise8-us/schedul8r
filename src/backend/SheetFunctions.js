@@ -1,11 +1,8 @@
 // AppScript runs as single file in google.  All variables and methods are available to all other backend files.
 const MEETING_DB_NAME = "meetingDB";
 const meetingDB = openDB();
-const meetings = meetingDB
-  .getSheetByName('meetings')
-  .getDataRange()
-  .getValues();
-const hosts = meetingDB.getSheetByName("hosts").getDataRange().getValues();
+const meetings = getSheetValues(meetingDB,'meetings')
+const hosts = getSheetValues(meetingDB,"hosts");
 
 function getMeetingDetails(meetingId) {
   return mapObject(meetings, meetingId);
@@ -60,4 +57,8 @@ function getColumnIndex(sheet, colHeader) {
 
 function getColumnHeaders(sheetValues) {
   return sheetValues[0];
+}
+
+function getSheetValues(spreadsheet, sheetName) {
+  return spreadsheet.getSheetByName(sheetName).getDataRange().getValues();
 }

@@ -2,8 +2,8 @@
 function getMeetingInfo(type) {
   type?.toLowerCase();
 
-  let meeting = getMeetingDetails(type);
-  let host = getRandomHost(meeting);
+  const meeting = getMeetingDetails(type);
+  const host = getRandomHost(meeting);
 
   meeting.host = host.email;
   meeting.displayName = host.displayName;
@@ -14,7 +14,7 @@ function getMeetingInfo(type) {
 }
 
 function preview(meeting, start) {
-  meeting.host = getMeetingHost(meeting.host)
+  meeting.host = getMeetingHost(meeting.host);
   start = new Date(...start.split("-"), 0, 0, 0).toISOString();
 
   let startWindow = relativeTimeWindowForHost(meeting.host.timeZone, start);
@@ -47,9 +47,10 @@ function preview(meeting, start) {
 }
 
 function scheduleEvent(meeting, startTime, guestEmail) {
+  meeting.host = getMeetingHost(meeting.host);
   startTime = new Date(startTime);
   const endTime = new Date(startTime.getTime() + meeting.duration * 60000);
-  let attendees = [host.email, guestEmail];
+  let attendees = [meeting.host.email, guestEmail];
 
   if (meeting.hasBotGuest) {
     attendees.push(BOT_EMAIL);
@@ -97,12 +98,12 @@ function getFreeBusyTimes({ host: { email } }, { start, end }) {
     b.start = new Date(b.start);
     b.end = new Date(b.end);
     return b;
-  })
+  });
 }
 
 function isNotDuringBusy(busyTimes, proposedEvent, officeHours) {
   for (const busyTime of busyTimes) {
-    //verfiy start is not during busy or before/after office hours
+    //verify start is not during busy or before/after office hours
     if (
       (proposedEvent.start.getTime() >= busyTime.start.getTime() &&
         proposedEvent.start.getTime() < busyTime.end.getTime()) ||
@@ -111,7 +112,7 @@ function isNotDuringBusy(busyTimes, proposedEvent, officeHours) {
     ) {
       return false;
     }
-    //verfiy end is not during busy or after office hours
+    //verify end is not during busy or after office hours
     if (
       (proposedEvent.end.getTime() > busyTime.start.getTime() &&
         proposedEvent.end.getTime() <= busyTime.end.getTime()) ||
