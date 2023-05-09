@@ -10,7 +10,7 @@ function getMeetingDetails(meetingId) {
 }
 
 function getRandomHost(meetingObj) {
-    const host = meetingObj.hosts[Math.floor(Math.random() * hosts.length)];
+    const host = meetingObj.hosts[Math.floor(Math.random() * meetingObj.hosts.length)];
     return mapObject(hosts, host)
 }
 

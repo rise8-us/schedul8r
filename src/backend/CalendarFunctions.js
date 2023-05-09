@@ -8,7 +8,6 @@ function getMeetingInfo(type) {
   meeting = getMeetingDetails(type);
   host = getRandomHost(meeting);
 
-
   meeting.host = host.email;
   meeting.displayName = host.displayName;
 
@@ -19,7 +18,6 @@ function getMeetingInfo(type) {
 
 function preview(meeting, start) {
   meeting.host = getMeetingHost(meeting.host)
-  Logger.log(meeting.host)
   start = new Date(...start.split("-"), 0, 0, 0).toISOString();
 
   let startWindow = relativeTimeWindowForHost(meeting.host.timeZone, start);
