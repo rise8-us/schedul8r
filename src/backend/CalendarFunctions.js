@@ -1,7 +1,4 @@
 // AppScript runs as single file in google.  All variables and methods are available to all other backend files.
-let meeting = {};
-let host = {}
-
 function getMeetingInfo(type) {
   type?.toLowerCase();
 
@@ -27,7 +24,7 @@ function preview(meeting, start) {
 
   let officeHours = { start: startWindow, end: endWindow };
 
-  const busyTimes = getFreebusyTimes(meeting, {
+  const busyTimes = getFreeBusyTimes(meeting, {
     start: startWindow,
     end: endWindow,
   });
@@ -76,7 +73,7 @@ function scheduleEvent(meeting, startTime, guestEmail) {
   Calendar.Events.insert(resource, calendar.getId(), { conferenceDataVersion: 1 })
 }
 
-function getFreebusyTimes({ host: { email } }, { start, end }) {
+function getFreeBusyTimes({ host: { email } }, { start, end }) {
   const request = {
     timeMin: start.toISOString(),
     timeMax: end.toISOString(),
