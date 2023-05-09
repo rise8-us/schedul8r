@@ -2,8 +2,8 @@
 function getMeetingInfo(type) {
   type?.toLowerCase();
 
-  meeting = getMeetingDetails(type);
-  host = getRandomHost(meeting);
+  let meeting = getMeetingDetails(type);
+  let host = getRandomHost(meeting);
 
   meeting.host = host.email;
   meeting.displayName = host.displayName;
