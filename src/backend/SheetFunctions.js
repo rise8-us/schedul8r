@@ -1,23 +1,26 @@
 // AppScript runs as single file in google.  All variables and methods are available to all other backend files.
+const MEETING_DB_NAME = "meetingDB";
+const meetingDB = openDB();
+const meetings = meetingDB.getSheetByName("meetings").getDataRange().getValues();
+const hosts = meetingDB.getSheetByName("hosts").getDataRange().getValues();
+
+
+function getMeetingDetails(meetingId) {
+    return mapObject(meetings, meetingId)
+}
+
 function getRandomHost(meetingObj) {
-    const hosts = meetingObj.hosts.split(",")
-    const host = hosts[Math.floor(Math.random() * hosts.length)].trim();
-    return getHostPrefrences(host)
+    const host = meetingObj.hosts[Math.floor(Math.random() * hosts.length)];
+    return mapObject(hosts, host)
 }
 
-function getHostPrefrences(host) {
-    const hostPrefs = openSheetByName(HOST_PREFRENCES_FILE_NAME)
-    return mapObject(hostPrefs, host);
+function getMeetingHost(hostId) {
+    return mapObject(hosts, hostId);
 }
 
-function getMeetingById(id) {
-    const meetings = openSheetByName(MEETINGS_FILE_NAME);
-    return mapObject(meetings, id);
-}
-
-// utility functions
-function openSheetByName(name) {
-    const files = DriveApp.getFilesByName(name)
+// // utility functions
+function openDB() {
+    const files = DriveApp.getFilesByName(MEETING_DB_NAME)
 
     if (files.hasNext()) {
         const file = files.next();
@@ -28,29 +31,27 @@ function openSheetByName(name) {
     }
 }
 
-function mapObject(spreadsheet, rowKey) {
-    const colHeaders = getColumnHeaders(spreadsheet)
-    const row = getRow(spreadsheet, rowKey)
-    return colHeaders.reduce((o,v,i) => { o[v] = row[i]; return o }, {})
+function mapObject(sheet, rowKey) {
+    const colHeaders = getColumnHeaders(sheet)
+    const row = getRow(sheet, rowKey)
+    if (row === undefined || row === null) return {} //add default meeting
+    return colHeaders.reduce((o,v,i) => {
+            o[v] = typeof(row[i]) === 'string' && row[i].includes(",") ?
+                row[i].split(",").reduce((a,v) => {a.push(v.trim()); return a}, []) :
+                row[i];
+            return o
+        },
+        {})
 }
 
-function queryValue(spreadsheet, rowKey, colHeader) {
-    const colIndex = getColumnIndex(spreadsheet, colHeader);
-    return getRow(spreadsheet, rowKey)[colIndex];
+function getRow(sheet, rowKey) {
+    return sheet.find((v) => v.includes(rowKey));
 }
 
-function getRow(spreadsheet, rowKey) {
-    return spreadsheet.getDataRange().getValues().find((v) => v.includes(rowKey));
+function getColumnIndex(sheet, colHeader) {
+    return getColumnHeaders(sheet).indexOf(colHeader);
 }
 
-function getColumnIndex(spreadsheet, colHeader) {
-    return getColumnHeaders(spreadsheet).indexOf(colHeader);
+function getColumnHeaders(sheetValues) {
+    return sheetValues[0];
 }
-
-function getColumnHeaders(spreadsheet) {
-    spreadsheet.getDataRange().getValues()[0].length
-    return spreadsheet.getSheetValues(1,1,1,10)[0].filter(c => c);
-}
-
-
-

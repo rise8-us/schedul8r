@@ -1,21 +1,25 @@
 // AppScript runs as single file in google.  All variables and methods are available to all other backend files.
+let meeting = {};
+let host = {}
+
 function getMeetingInfo(type) {
   type?.toLowerCase();
 
-  const meeting = getMeetingDetails(type);
-  const host = getMeetingHost(meeting.getNextHost());
+  meeting = getMeetingDetails(type);
+  host = getRandomHost(meeting);
+
 
   meeting.host = host.email;
   meeting.displayName = host.displayName;
 
   delete meeting.hosts;
-  delete meeting.getNextHost;
 
   return meeting;
 }
 
 function preview(meeting, start) {
-  meeting.host = getMeetingHost(meeting.host);
+  meeting.host = getMeetingHost(meeting.host)
+  Logger.log(meeting.host)
   start = new Date(...start.split("-"), 0, 0, 0).toISOString();
 
   let startWindow = relativeTimeWindowForHost(meeting.host.timeZone, start);
@@ -48,7 +52,6 @@ function preview(meeting, start) {
 }
 
 function scheduleEvent(meeting, startTime, guestEmail) {
-  let host = getMeetingHost(meeting.host);
   startTime = new Date(startTime);
   const endTime = new Date(startTime.getTime() + meeting.duration * 60000);
   let attendees = [host.email, guestEmail];
@@ -64,7 +67,7 @@ function scheduleEvent(meeting, startTime, guestEmail) {
       createRequest: {
         requestId: Math.random().toString(36).substring(7),
         conferenceSolutionKey : {
-            type: 'hangoutsMeet'
+          type: 'hangoutsMeet'
         }
       },
     },
@@ -99,18 +102,20 @@ function isNotDuringBusy(busyTimes, proposedEvent, officeHours) {
   for (const busyTime of busyTimes) {
     //verfiy start is not during busy or before/after office hours
     if (
-      (proposedEvent.start.getTime() >= busyTime.start.getTime() &&
-        proposedEvent.start.getTime() < busyTime.end.getTime()) ||
-      proposedEvent.start.getTime() < officeHours.start.getTime() ||
-      proposedEvent.start.getTime() > officeHours.end.getTime()
+        (proposedEvent.start.getTime() >= busyTime.start.getTime() &&
+            proposedEvent.start.getTime() < busyTime.end.getTime()
+        ) ||
+        proposedEvent.start.getTime() < officeHours.start.getTime() ||
+        proposedEvent.start.getTime() > officeHours.end.getTime()
     ) {
       return false;
     }
     //verfiy end is not during busy or after office hours
     if (
-      (proposedEvent.end.getTime() > busyTime.start.getTime() &&
-        proposedEvent.end.getTime() <= busyTime.end.getTime()) ||
-      proposedEvent.end.getTime() > officeHours.end.getTime()
+        (proposedEvent.end.getTime() > busyTime.start.getTime() &&
+            proposedEvent.end.getTime() <= busyTime.end.getTime()
+        ) ||
+        proposedEvent.end.getTime() > officeHours.end.getTime()
     ) {
       return false;
     }
@@ -121,7 +126,7 @@ function isNotDuringBusy(busyTimes, proposedEvent, officeHours) {
 function getCalendar(calendarName) {
   let calendar = CalendarApp.getCalendarsByName(calendarName)[0];
   calendar =
-    calendar != null ? calendar : CalendarApp.getCalendarById(calendarName);
+      calendar != null ? calendar : CalendarApp.getCalendarById(calendarName);
 
   if (calendar) {
     return calendar;

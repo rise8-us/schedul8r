@@ -97,13 +97,13 @@ const meetingHosts = {
   },
 };
 
-function getMeetingDetails(meetingType) {
-  return meetingTypes[meetingType] ?? meetingTypes.default;
-}
+// function getMeetingDetails(meetingType) {
+//   return meetingTypes[meetingType] ?? meetingTypes.default;
+// }
 
-function getMeetingHost(hostName) {
-  return meetingHosts[hostName];
-}
+// function getMeetingHost(hostName) {
+//   return meetingHosts[hostName];
+// }
 
 function getMeetingTypes() {
   return meetingTypes;
