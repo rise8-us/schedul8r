@@ -37,7 +37,12 @@ function mapObject(sheet, rowKey) {
     if (row === undefined || row === null) return {} //add default meeting
     return colHeaders.reduce((o,v,i) => {
             o[v] = typeof(row[i]) === 'string' && row[i].includes(",") ?
-                row[i].split(",").reduce((a,v) => {a.push(v.trim()); return a}, []) :
+                row[i].split(",").reduce(
+                    (a,v) => {
+                        v = v.trim();
+                        a.push(isNaN(v) ? v : Number(v));
+                        return a
+                }, []) :
                 row[i];
             return o
         },
