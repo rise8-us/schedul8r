@@ -9,6 +9,7 @@
     "dev": "vite",
     "build": "npm run clean && vite build && npm run build:api",
     "build:push": "npm run build && clasp push",
+    "lint:fix": "eslint src/. --fix",
     "preview": "vite preview"
   },
   "devDependencies": {
