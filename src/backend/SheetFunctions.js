@@ -21,7 +21,6 @@ function getMeetingHost(hostId) {
   return mapObject(hosts, hostId);
 }
 
-// // utility functions
 function openDB() {
   const files = DriveApp.getFilesByName(MEETING_DB_NAME);
 
@@ -37,7 +36,7 @@ function openDB() {
 function mapObject(sheet, rowKey) {
   const colHeaders = getColumnHeaders(sheet);
   const row = getRow(sheet, rowKey);
-  if (row === undefined || row === null) return {}; //add default meeting
+  if (row === undefined || row === null) return {};
   return colHeaders.reduce((o, v, i) => {
     o[v] =
       typeof row[i] === "string" && row[i].includes(",")
