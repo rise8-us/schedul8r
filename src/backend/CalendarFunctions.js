@@ -3,13 +3,12 @@ function getMeetingInfo(type) {
   type?.toLowerCase();
 
   const meeting = getMeetingDetails(type);
-  const host = getMeetingHost(meeting.getNextHost());
+  const host = getRandomHost(meeting);
 
   meeting.host = host.email;
   meeting.displayName = host.displayName;
 
   delete meeting.hosts;
-  delete meeting.getNextHost;
 
   return meeting;
 }
@@ -25,7 +24,7 @@ function preview(meeting, start) {
 
   let officeHours = { start: startWindow, end: endWindow };
 
-  const busyTimes = getFreebusyTimes(meeting, {
+  const busyTimes = getFreeBusyTimes(meeting, {
     start: startWindow,
     end: endWindow,
   });
@@ -48,34 +47,41 @@ function preview(meeting, start) {
 }
 
 function scheduleEvent(meeting, startTime, guestEmail) {
-  let host = getMeetingHost(meeting.host);
+  meeting.host = getMeetingHost(meeting.host);
   startTime = new Date(startTime);
   const endTime = new Date(startTime.getTime() + meeting.duration * 60000);
-  let attendees = [host.email, guestEmail];
+  let attendees = [meeting.host.email, guestEmail];
 
-  if (meeting.hasBotGuest) {attendees.push(BOT_EMAIL)}
+  if (meeting.hasBotGuest) {
+    attendees.push(BOT_EMAIL);
+  }
 
   const calendar = getCalendar(meeting.calendar);
   const resource = {
-    start: {dateTime: startTime.toISOString() },
+    start: { dateTime: startTime.toISOString() },
     end: { dateTime: endTime.toISOString() },
-    attendees: attendees.reduce((a,e) => {a.push({email: e}); return a}, []),
+    attendees: attendees.reduce((a, e) => {
+      a.push({ email: e });
+      return a;
+    }, []),
     conferenceData: {
       createRequest: {
         requestId: Math.random().toString(36).substring(7),
-        conferenceSolutionKey : {
-            type: 'hangoutsMeet'
-        }
+        conferenceSolutionKey: {
+          type: 'hangoutsMeet',
+        },
       },
     },
     summary: meeting.title,
     description: meeting.description,
   };
 
-  Calendar.Events.insert(resource, calendar.getId(), { conferenceDataVersion: 1 })
+  Calendar.Events.insert(resource, calendar.getId(), {
+    conferenceDataVersion: 1,
+  })
 }
 
-function getFreebusyTimes({ host: { email } }, { start, end }) {
+function getFreeBusyTimes({ host: { email } }, { start, end }) {
   const request = {
     timeMin: start.toISOString(),
     timeMax: end.toISOString(),
@@ -97,7 +103,7 @@ function getFreebusyTimes({ host: { email } }, { start, end }) {
 
 function isNotDuringBusy(busyTimes, proposedEvent, officeHours) {
   for (const busyTime of busyTimes) {
-    //verfiy start is not during busy or before/after office hours
+    //verify start is not during busy or before/after office hours
     if (
       (proposedEvent.start.getTime() >= busyTime.start.getTime() &&
         proposedEvent.start.getTime() < busyTime.end.getTime()) ||
@@ -106,7 +112,7 @@ function isNotDuringBusy(busyTimes, proposedEvent, officeHours) {
     ) {
       return false;
     }
-    //verfiy end is not during busy or after office hours
+    //verify end is not during busy or after office hours
     if (
       (proposedEvent.end.getTime() > busyTime.start.getTime() &&
         proposedEvent.end.getTime() <= busyTime.end.getTime()) ||

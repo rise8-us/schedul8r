@@ -1,56 +1,64 @@
 // AppScript runs as single file in google.  All variables and methods are available to all other backend files.
+const MEETING_DB_NAME = "meetingDB";
+const meetingDB = openDB();
+const meetings = getSheetValues(meetingDB,'meetings')
+const hosts = getSheetValues(meetingDB,"hosts");
+
+function getMeetingDetails(meetingId) {
+  return mapObject(meetings, meetingId);
+}
+
 function getRandomHost(meetingObj) {
-    const hosts = meetingObj.hosts.split(",")
-    const host = hosts[Math.floor(Math.random() * hosts.length)].trim();
-    return getHostPrefrences(host)
+  const host =
+    meetingObj.hosts[Math.floor(Math.random() * meetingObj.hosts.length)];
+  return mapObject(hosts, host)
 }
 
-function getHostPrefrences(host) {
-    const hostPrefs = openSheetByName(HOST_PREFRENCES_FILE_NAME)
-    return mapObject(hostPrefs, host);
+function getMeetingHost(hostId) {
+  return mapObject(hosts, hostId);
 }
 
-function getMeetingById(id) {
-    const meetings = openSheetByName(MEETINGS_FILE_NAME);
-    return mapObject(meetings, id);
+function openDB() {
+  const files = DriveApp.getFilesByName(MEETING_DB_NAME);
+
+  if (files.hasNext()) {
+    const file = files.next();
+    const sheet = SpreadsheetApp.open(file)
+    return sheet
+  } else {
+    Logger.log("File not found: " + fileName);
+  }
 }
 
-// utility functions
-function openSheetByName(name) {
-    const files = DriveApp.getFilesByName(name)
-
-    if (files.hasNext()) {
-        const file = files.next();
-        const sheet = SpreadsheetApp.open(file);
-        return sheet;
-    } else {
-        Logger.log("File not found: " + fileName);
-    }
+function mapObject(sheet, rowKey) {
+  const colHeaders = getColumnHeaders(sheet);
+  const row = getRow(sheet, rowKey);
+  if (row === undefined || row === null) return {};
+  return colHeaders.reduce((o, v, i) => {
+    o[v] =
+      typeof row[i] === "string" && row[i].includes(",")
+        ? row[i].split(",").reduce((a, v) => {
+          v = v.trim();
+          a.push(isNaN(v) ? v : Number(v));
+            return a;
+        }, [])
+        : row[i];
+    return o
+  }, {});
 }
 
-function mapObject(spreadsheet, rowKey) {
-    const colHeaders = getColumnHeaders(spreadsheet)
-    const row = getRow(spreadsheet, rowKey)
-    return colHeaders.reduce((o,v,i) => { o[v] = row[i]; return o }, {})
+function getRow(sheet, rowKey) {
+  return sheet.find((v) => v.includes(rowKey));
 }
 
-function queryValue(spreadsheet, rowKey, colHeader) {
-    const colIndex = getColumnIndex(spreadsheet, colHeader);
-    return getRow(spreadsheet, rowKey)[colIndex];
+function getColumnIndex(sheet, colHeader) {
+  return getColumnHeaders(sheet).indexOf(colHeader);
 }
 
-function getRow(spreadsheet, rowKey) {
-    return spreadsheet.getDataRange().getValues().find((v) => v.includes(rowKey));
+function getColumnHeaders(sheetValues) {
+  return sheetValues[0];
 }
 
-function getColumnIndex(spreadsheet, colHeader) {
-    return getColumnHeaders(spreadsheet).indexOf(colHeader);
+function getSheetValues(spreadsheet, sheetName) {
+  return spreadsheet.getSheetByName(sheetName).getDataRange().getValues();
 }
-
-function getColumnHeaders(spreadsheet) {
-    spreadsheet.getDataRange().getValues()[0].length
-    return spreadsheet.getSheetValues(1,1,1,10)[0].filter(c => c);
-}
-
-
-

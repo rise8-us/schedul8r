@@ -46,7 +46,7 @@ $(function () {
   generateCalendarContent(currentMonth, currentYear);
   generateInfoBlock();
   google.script.url.getLocation(fetchMeetingInfo);
-});
+})
 
 function fetchMeetingInfo(location) {
   const { parameter } = location;
@@ -233,7 +233,7 @@ function generateHourButtons(data) {
         selectedTime.classList.remove("selected");
         selectedTime = undefined;
 
-        return;
+        return
       }
 
       if (selectedTime) selectedTime.classList.remove("selected");
@@ -252,7 +252,7 @@ function generateHourButtons(data) {
         .addEventListener("click", (event) => {
           createRipple(event);
           generateRequestorForm(timeBlock);
-        });
+        })
     });
   }
 }
@@ -470,7 +470,7 @@ function addDayButtonsClickListener(buttonIds) {
         $("#time").removeClass("enabled");
         selectedDay = undefined;
 
-        return;
+        return
       }
 
       if (selectedDay) selectedDay.classList.remove("selected");
@@ -479,7 +479,7 @@ function addDayButtonsClickListener(buttonIds) {
       selectedDay.classList.add("selected");
 
       fetchAvailability(buttonId);
-    });
+    })
   }
 }
 
