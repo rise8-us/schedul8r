@@ -1,19 +1,14 @@
 {
-  "extends": [
-    "plugin:prettier/recommended",
-    "eslint:recommended",
-    "prettier"
-  ],
+  "extends": ["eslint:recommended"],
   "parserOptions": {
     "ecmaVersion": "latest"
   },
   "env": {
     "es6": true
   },
-  "plugins": ["prettier"],
   "rules": {
-    "prettier/prettier": "error",
-    "no-unused-vars": "off",
+    "no-unused-vars": "off", // turn off for how app scripts work
+    "no-undef": "off", // turn off for how app scripts work
     "indent": [
       "warn",
       2,
@@ -34,7 +29,8 @@
       1,
       {
         "code": 120,
-        "ignoreUrls": true
+        "ignoreUrls": true,
+        "ignoreTemplateLiterals": true
       }
     ],
     "array-bracket-spacing": "warn",

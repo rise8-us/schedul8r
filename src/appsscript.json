@@ -11,6 +11,16 @@
         "userSymbol": "AdminDirectory",
         "version": "directory_v1",
         "serviceId": "admin"
+      },
+      {
+        "userSymbol": "Drive",
+        "version": "v2",
+        "serviceId": "drive"
+      },
+      {
+        "userSymbol": "Sheets",
+        "version": "v4",
+        "serviceId": "sheets"
       }
     ]
   },

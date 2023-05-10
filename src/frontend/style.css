@@ -50,10 +50,8 @@ button {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 button:hover {
@@ -101,10 +99,10 @@ button.disabled:hover {
 .branding::before {
   position: absolute;
   bottom: -1px;
-  left: -1px;
-  content: "";
-  height: 7px;
-  width: 6px;
+  left: -2px;
+  content: '';
+  height: 8px;
+  width: 7px;
   background: #800031;
   transform: rotate(45deg);
 }
@@ -113,9 +111,9 @@ button.disabled:hover {
   position: absolute;
   bottom: 0;
   right: -5px;
-  content: "";
-  height: 7px;
-  width: 7px;
+  content: '';
+  height: 6px;
+  width: 9px;
   background: #800031;
   transform: rotate(45deg);
 }
@@ -202,8 +200,7 @@ button.disabled:hover {
   padding: 0;
   max-height: 316px;
   overflow-y: auto;
-  transition: max-width 400ms cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 200ms ease-in 400ms;
+  transition: max-width 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in 400ms;
 }
 
 .timeContainer.enabled {
@@ -242,8 +239,7 @@ button.disabled:hover {
   border-color: #800031;
   color: #800031;
   font-weight: bold;
-  transition: min-width 200ms cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 200ms ease-in 400ms;
+  transition: min-width 200ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in 400ms;
 }
 
 .time_option:hover {
@@ -366,10 +362,21 @@ button.disabled:hover {
 }
 
 .scheduleEvent {
+  display: flex;
+  justify-content: space-around;
   background-image: linear-gradient(0deg, #800031, red);
-  border-radius: 20px;
+  height: 48px;
+  border-radius: 24px;
   color: white;
-  width: 136px;
+  width: 160px;
+}
+
+.scheduleEvent.disabled {
+  background: gray;
+}
+
+.scheduleEvent.disabled:hover {
+  background: gray;
 }
 
 .interviewer {
@@ -446,21 +453,53 @@ span.ripple {
 }
 
 .skeleton::before {
-  content: " ";
+  content: ' ';
 }
 
 .skeleton::after {
   animation: 1.6s linear 0.5s infinite normal none running skeleton-pulse;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(0, 0, 0, 0.1),
-    transparent
-  );
-  content: "";
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+  content: '';
   position: absolute;
   transform: translateX(-100%);
   inset: 0px;
+}
+
+#loading {
+  width: 24px;
+}
+
+.loading {
+  top: -1px;
+  display: inline-block;
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.loading div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  margin: 2px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  animation: loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: currentColor transparent transparent transparent;
+}
+
+.loading div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.loading div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.loading div:nth-child(3) {
+  animation-delay: -0.15s;
 }
 
 .checkmark svg {
@@ -519,5 +558,14 @@ span.ripple {
   to {
     transform: scale(4);
     opacity: 0;
+  }
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

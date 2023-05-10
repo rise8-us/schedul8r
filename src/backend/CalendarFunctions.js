@@ -1,69 +1,65 @@
 // AppScript runs as single file in google.  All variables and methods are available to all other backend files.
 function getMeetingInfo(type) {
-  type?.toLowerCase();
+  type?.toLowerCase()
 
-  const meeting = getMeetingDetails(type);
-  const host = getRandomHost(meeting);
+  const meeting = getMeetingDetails(type)
+  const host = getRandomHost(meeting)
 
-  meeting.host = host.email;
-  meeting.displayName = host.displayName;
+  meeting.host = host.email
+  meeting.displayName = host.displayName
 
-  delete meeting.hosts;
+  delete meeting.hosts
 
-  return meeting;
+  return meeting
 }
 
-function preview(meeting, start) {
-  meeting.host = getMeetingHost(meeting.host);
-  start = new Date(...start.split("-"), 0, 0, 0).toISOString();
+function preview(meeting, startString) {
+  const { duration, host } = meeting
+  const { email, timeZone, officeHours } = getMeetingHost(host)
 
-  let startWindow = relativeTimeWindowForHost(meeting.host.timeZone, start);
-  let endWindow = new Date(startWindow);
-  startWindow.setHours(startWindow.getHours() + meeting.host.officeHours[0]);
-  endWindow.setHours(endWindow.getHours() + meeting.host.officeHours[1]);
+  const startISOString = new Date(...startString.split('-'), 0, 0, 0).toISOString()
+  let start = relativeTimeWindowForHost(timeZone, startISOString)
+  let end = new Date(start)
 
-  let officeHours = { start: startWindow, end: endWindow };
+  start.setHours(start.getHours() + officeHours[0])
+  end.setHours(end.getHours() + officeHours[1])
 
-  const busyTimes = getFreeBusyTimes(meeting, {
-    start: startWindow,
-    end: endWindow,
-  });
-
-  let possibleEvents = [];
+  let workWindow = { start, end }
+  const busyTimes = getFreeBusyTimes(email, workWindow)
+  let possibleEvents = []
   let proposedEvent = {
-    start: startWindow,
-    end: new Date(startWindow.getTime() + meeting.duration * 60000),
-  };
+    start,
+    end: new Date(start.getTime() + duration * 60000),
+  }
 
-  while (proposedEvent.end.getTime() < endWindow.getTime()) {
-    if (isNotDuringBusy(busyTimes, proposedEvent, officeHours)) {
-      possibleEvents.push(proposedEvent.start.getTime());
+  while (proposedEvent.end.getTime() < end.getTime()) {
+    if (isNotDuringBusy(busyTimes, proposedEvent, workWindow)) {
+      possibleEvents.push(proposedEvent.start.getTime())
     }
 
-    proposedEvent.start.setTime(proposedEvent.start.getTime() + 15 * 60000);
-    proposedEvent.end.setTime(proposedEvent.end.getTime() + 15 * 60000);
+    proposedEvent.start.setTime(proposedEvent.start.getTime() + 15 * 60000)
+    proposedEvent.end.setTime(proposedEvent.end.getTime() + 15 * 60000)
   }
-  return possibleEvents;
+
+  return possibleEvents
 }
 
-function scheduleEvent(meeting, startTime, guestEmail) {
-  meeting.host = getMeetingHost(meeting.host);
-  startTime = new Date(startTime);
-  const endTime = new Date(startTime.getTime() + meeting.duration * 60000);
-  let attendees = [meeting.host.email, guestEmail];
+function scheduleEvent(meeting, startString, guestEmail) {
+  const { description, duration, host, title } = meeting
+  const { email } = getMeetingHost(host)
+  const calendar = getCalendar(meeting.calendar)
+  const startTime = new Date(startString)
+  const endTime = new Date(startTime.getTime() + duration * 60000)
+  const attendees = [email, guestEmail]
 
   if (meeting.hasBotGuest) {
-    attendees.push(BOT_EMAIL);
+    attendees.push(BOT_EMAIL)
   }
 
-  const calendar = getCalendar(meeting.calendar);
   const resource = {
     start: { dateTime: startTime.toISOString() },
     end: { dateTime: endTime.toISOString() },
-    attendees: attendees.reduce((a, e) => {
-      a.push({ email: e });
-      return a;
-    }, []),
+    attendees: attendees.map((email) => ({ email })),
     conferenceData: {
       createRequest: {
         requestId: Math.random().toString(36).substring(7),
@@ -72,19 +68,19 @@ function scheduleEvent(meeting, startTime, guestEmail) {
         },
       },
     },
-    summary: meeting.title,
-    description: meeting.description,
-  };
+    summary: title,
+    description: description,
+  }
 
   Calendar.Events.insert(resource, calendar.getId(), {
     conferenceDataVersion: 1,
   })
 }
 
-function getFreeBusyTimes({ host: { email } }, { start, end }) {
+function getFreeBusyTimes(email, workWindow) {
   const request = {
-    timeMin: start.toISOString(),
-    timeMax: end.toISOString(),
+    timeMin: workWindow.start.toISOString(),
+    timeMax: workWindow.end.toISOString(),
     groupExpansionMax: 100,
     calendarExpansionMax: 100,
     items: [
@@ -92,13 +88,14 @@ function getFreeBusyTimes({ host: { email } }, { start, end }) {
         id: email,
       },
     ],
-  };
+  }
 
   return Calendar.Freebusy.query(request).calendars[email].busy.map((b) => {
-    b.start = new Date(b.start);
-    b.end = new Date(b.end);
-    return b;
-  });
+    b.start = new Date(b.start)
+    b.end = new Date(b.end)
+
+    return b
+  })
 }
 
 function isNotDuringBusy(busyTimes, proposedEvent, officeHours) {
@@ -110,7 +107,7 @@ function isNotDuringBusy(busyTimes, proposedEvent, officeHours) {
       proposedEvent.start.getTime() < officeHours.start.getTime() ||
       proposedEvent.start.getTime() > officeHours.end.getTime()
     ) {
-      return false;
+      return false
     }
     //verify end is not during busy or after office hours
     if (
@@ -118,38 +115,36 @@ function isNotDuringBusy(busyTimes, proposedEvent, officeHours) {
         proposedEvent.end.getTime() <= busyTime.end.getTime()) ||
       proposedEvent.end.getTime() > officeHours.end.getTime()
     ) {
-      return false;
+      return false
     }
   }
-  return true;
+  return true
 }
 
 function getCalendar(calendarName) {
-  let calendar = CalendarApp.getCalendarsByName(calendarName)[0];
-  calendar =
-    calendar != null ? calendar : CalendarApp.getCalendarById(calendarName);
+  const calendar = CalendarApp.getCalendarsByName(calendarName)[0] ?? CalendarApp.getCalendarById(calendarName)
 
   if (calendar) {
-    return calendar;
+    return calendar
   } else {
-    throw new Error("Calendar not found: " + calendarName);
+    throw new Error('Calendar not found: ' + calendarName)
   }
 }
 
 function relativeTimeWindowForHost(timeZone, startTime) {
-  const start = new Date(startTime);
-  const formatter = new Intl.DateTimeFormat("en-US", {
+  const start = new Date(startTime)
+  const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-  });
-  const offset = 24 - new Date(Date.parse(formatter.format(start))).getHours();
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  })
+  const offset = 24 - new Date(Date.parse(formatter.format(start))).getHours()
 
-  start.setHours(offset);
+  start.setHours(offset)
 
-  return start;
+  return start
 }
