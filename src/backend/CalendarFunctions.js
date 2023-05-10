@@ -102,6 +102,22 @@ function isNotBusy(busyTimes, proposedEvent, officeHours) {
   for (const busyTime of busyTimes) {
     //verify not busy during proposed event
     if (
+        (proposedEvent.start.getTime() >= busyTime.start.getTime() &&
+            proposedEvent.start.getTime() < busyTime.end.getTime()) ||
+        proposedEvent.start.getTime() < officeHours.start.getTime() ||
+        proposedEvent.start.getTime() > officeHours.end.getTime()
+    ) {
+      return false
+    }
+    //verify end is not during busy or after office hours
+    if (
+        (proposedEvent.end.getTime() > busyTime.start.getTime() &&
+            proposedEvent.end.getTime() <= busyTime.end.getTime()) ||
+        proposedEvent.end.getTime() > officeHours.end.getTime()
+    ) {
+      return false
+    }
+    if (
         (busyTime.start.getTime() >= proposedEvent.start.getTime() &&
             busyTime.start.getTime() < proposedEvent.end.getTime()) ||
         (busyTime.end.getTime() > proposedEvent.start.getTime() &&
