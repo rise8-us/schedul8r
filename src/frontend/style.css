@@ -410,8 +410,8 @@ button.disabled:hover {
   margin-right: -24px;
 }
 
-.meetingBook {
-  padding-right: 24px;
+.meetingBooked {
+  padding: 24px;
   text-align: center;
 }
 
