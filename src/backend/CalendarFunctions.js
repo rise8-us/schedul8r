@@ -117,6 +117,14 @@ function isNotDuringBusy(busyTimes, proposedEvent, officeHours) {
     ) {
       return false
     }
+    if (
+        (busyTime.start.getTime() > proposedEvent.start.getTime() &&
+            busyTime.start.getTime() < proposedEvent.end.getTime()) ||
+        (busyTime.end.getTime() > proposedEvent.start.getTime() &&
+            busyTime.end.getTime() <= proposedEvent.end.getTime()
+        )) {
+      return false
+    }
   }
   return true
 }
