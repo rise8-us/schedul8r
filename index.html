@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+ <html lang="en">
   <head>
     <base target="_top">
     <link rel="stylesheet" href="src/frontend/style.css">
@@ -9,7 +9,7 @@
     <div style="padding: 4px; overflow: hidden; width: fit-content; margin: auto;">
       <div class="schedule__container">
         <div id="meeting_info" class="meeting__info">
-          <img class="logo" src="https://d3v0px0pttie1i.cloudfront.net/uploads/organization/logo/3296535/895ca01b.png" />
+          <img class="logo" src="https://d3v0px0pttie1i.cloudfront.net/uploads/organization/logo/3296535/895ca01b.png" alt="Rise8"/>
           <div id="info_block" class="info_block" ></div>
         </div>
         <div id="container" class="container">
@@ -22,7 +22,7 @@
           <div class="selectDateTime__wrap">
             <h3>Select a Date & Time</h3>
             <div class="calendar__wrap">
-              <span class="calendarContainer" id="calendar" />
+              <span class="calendarContainer" id="calendar"></span>
             </div>
           </div>
           <div class="details__wrap inactive">
@@ -41,7 +41,10 @@
                 <textarea id="question0" name="question0" style="margin-bottom: -3px;"></textarea>
               </div>
             </div>
-            <button id="scheduleEventButton" class="scheduleEvent">Schedule Event</button>
+            <button id="scheduleEventButton" class="scheduleEvent">
+              <h4>Schedule Event</h4>
+              <div id="scheduleIcon" style="max-height: 24px;"></div>
+            </button>
           </div>
         </div>
       </div>
