@@ -32,8 +32,8 @@ function preview(meeting, startString) {
     end: new Date(start.getTime() + duration * 60000),
   }
 
-  while (proposedEvent.end.getTime() < end.getTime()) {
-    if (isNotDuringBusy(busyTimes, proposedEvent, workWindow)) {
+  while (proposedEvent.end.getTime() <= end.getTime()) {
+    if (isNotBusy(busyTimes, proposedEvent, workWindow)) {
       possibleEvents.push(proposedEvent.start.getTime())
     }
 
@@ -98,22 +98,31 @@ function getFreeBusyTimes(email, workWindow) {
   })
 }
 
-function isNotDuringBusy(busyTimes, proposedEvent, officeHours) {
+function isNotBusy(busyTimes, proposedEvent, officeHours) {
   for (const busyTime of busyTimes) {
     //verify start is not during busy or before/after office hours
     if (
-      (proposedEvent.start.getTime() >= busyTime.start.getTime() &&
-        proposedEvent.start.getTime() < busyTime.end.getTime()) ||
-      proposedEvent.start.getTime() < officeHours.start.getTime() ||
-      proposedEvent.start.getTime() > officeHours.end.getTime()
+        (proposedEvent.start.getTime() >= busyTime.start.getTime() &&
+            proposedEvent.start.getTime() < busyTime.end.getTime()) ||
+        proposedEvent.start.getTime() < officeHours.start.getTime() ||
+        proposedEvent.start.getTime() > officeHours.end.getTime()
     ) {
       return false
     }
     //verify end is not during busy or after office hours
     if (
-      (proposedEvent.end.getTime() > busyTime.start.getTime() &&
-        proposedEvent.end.getTime() <= busyTime.end.getTime()) ||
-      proposedEvent.end.getTime() > officeHours.end.getTime()
+        (proposedEvent.end.getTime() > busyTime.start.getTime() &&
+            proposedEvent.end.getTime() <= busyTime.end.getTime()) ||
+        proposedEvent.end.getTime() > officeHours.end.getTime()
+    ) {
+      return false
+    }
+    //verify not busy during proposed event
+    if (
+        (busyTime.start.getTime() >= proposedEvent.start.getTime() &&
+            busyTime.start.getTime() < proposedEvent.end.getTime()) ||
+        (busyTime.end.getTime() > proposedEvent.start.getTime() &&
+            busyTime.end.getTime() <= proposedEvent.end.getTime())
     ) {
       return false
     }
