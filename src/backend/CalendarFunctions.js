@@ -100,7 +100,7 @@ function getFreeBusyTimes(email, workWindow) {
 
 function isNotBusy(busyTimes, proposedEvent, officeHours) {
   for (const busyTime of busyTimes) {
-    //verify not busy during proposed event
+    //verify start is not during busy or before/after office hours
     if (
         (proposedEvent.start.getTime() >= busyTime.start.getTime() &&
             proposedEvent.start.getTime() < busyTime.end.getTime()) ||
@@ -117,6 +117,7 @@ function isNotBusy(busyTimes, proposedEvent, officeHours) {
     ) {
       return false
     }
+    //verify not busy during proposed event
     if (
         (busyTime.start.getTime() >= proposedEvent.start.getTime() &&
             busyTime.start.getTime() < proposedEvent.end.getTime()) ||
