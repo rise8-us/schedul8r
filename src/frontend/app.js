@@ -103,26 +103,28 @@ function generateCalendarHeader(calendar, month, year) {
   calendar.append(header)
 
   for (const id of ids) {
-    document.getElementById(id).addEventListener('click', (event) => {
-      const [newYear, newMonth] = calculateNewYearAndMonth(currentYear, currentMonth, id)
-      const newYearMonth = newYear + guaranteeTwoDigits(newMonth)
+    $(`#${id}`)
+      .off('click')
+      .on('click', (event) => {
+        const [newYear, newMonth] = calculateNewYearAndMonth(currentYear, currentMonth, id)
+        const newYearMonth = newYear + guaranteeTwoDigits(newMonth)
 
-      if (id === 'decrement') {
-        if (+activeYearMonth === +newYearMonth) $('#decrement').addClass('disabled')
-        if (+activeYearMonth > +newYearMonth) return
-      } else {
-        $('#decrement').removeClass('disabled')
-      }
+        if (id === 'decrement') {
+          if (+activeYearMonth === +newYearMonth) $('#decrement').addClass('disabled')
+          if (+activeYearMonth > +newYearMonth) return
+        } else {
+          $('#decrement').removeClass('disabled')
+        }
 
-      createRipple(event)
-      currentYear = newYear
-      currentMonth = newMonth
+        createRipple(event)
+        currentYear = newYear
+        currentMonth = newMonth
 
-      const { firstDayOfWeek, maxWeeks } = genCalendarData(newMonth, newYear)
+        const { firstDayOfWeek, maxWeeks } = genCalendarData(newMonth, newYear)
 
-      updateHeader(newMonth, newYear)
-      generateDays(maxWeeks, newYear, newMonth, firstDayOfWeek)
-    })
+        updateHeader(newMonth, newYear)
+        generateDays(maxWeeks, newYear, newMonth, firstDayOfWeek)
+      })
   }
 }
 
@@ -198,38 +200,40 @@ function generateHourButtons(data) {
     </div>
   `)
 
-    const button = document.getElementById(timeBlock)
-
-    button.addEventListener('click', (event) => {
-      createRipple(event)
-
-      if (+selectedTime?.id === timeBlock) {
-        $('.time_confirm_btn').remove()
-        selectedTime.classList.remove('selected')
-        selectedTime = undefined
-
-        return
-      }
-
-      if (selectedTime) selectedTime.classList.remove('selected')
-      $('.time_confirm_btn').remove()
-
-      const confirmBtn = $(`#time__wrap-${timeBlock}`)
-      confirmBtn.append('<button id="timeConfirmButton" class="time_confirm_btn">Confirm</button>')
-
-      selectedTime = document.getElementById(timeBlock)
-      selectedTime.classList.add('selected')
-
-      document.getElementById('timeConfirmButton').addEventListener('click', (event) => {
+    $(`#${timeBlock}`)
+      .off('click')
+      .on('click', (event) => {
         createRipple(event)
-        generateRequestorForm(timeBlock)
+
+        if (+selectedTime?.id === timeBlock) {
+          $('.time_confirm_btn').remove()
+          selectedTime.classList.remove('selected')
+          selectedTime = undefined
+
+          return
+        }
+
+        if (selectedTime) selectedTime.classList.remove('selected')
+        $('.time_confirm_btn').remove()
+
+        const confirmBtn = $(`#time__wrap-${timeBlock}`)
+        confirmBtn.append('<button id="timeConfirmButton" class="time_confirm_btn">Confirm</button>')
+
+        selectedTime = document.getElementById(timeBlock)
+        selectedTime.classList.add('selected')
+
+        $('#timeConfirmButton')
+          .off('click')
+          .on('click', (event) => {
+            createRipple(event)
+            generateRequestorForm(timeBlock)
+          })
       })
-    })
   }
 }
 
 function generateRequestorForm(timeBlock) {
-  $('#scheduleIcon').append(getSendIcon())
+  $('#scheduleIcon').empty().append(getSendIcon())
   $('.selectDateTime__wrap').addClass('inactive')
   $('.details__wrap').removeClass('inactive')
   $('#backButton').removeClass('inactive')
@@ -237,46 +241,48 @@ function generateRequestorForm(timeBlock) {
   $('#timezone').empty().append(addTimezone())
   $('#date-time-value').empty().append(buildDurationString(timeBlock, meetingSettings.duration))
 
-  document.getElementById('scheduleEventButton').addEventListener('click', (event) => {
-    createRipple(event)
+  $('#scheduleEventButton')
+    .off('click')
+    .on('click', (event) => {
+      createRipple(event)
 
-    const requestorName = document.getElementById('full_name')
-    const requestorEmail = document.getElementById('mail')
-    // TODO: Handle extra info
-    // const requestorExtraInfo = document.getElementById("question0");
-    let shouldSchedule = true
+      const requestorName = document.getElementById('full_name')
+      const requestorEmail = document.getElementById('mail')
+      // TODO: Handle extra info
+      // const requestorExtraInfo = document.getElementById("question0");
+      let shouldSchedule = true
 
-    if (!requestorName.validity.valid) {
-      $('#full_name__wrap').addClass('invalid')
-      shouldSchedule = false
-    } else {
-      $('#full_name__wrap').removeClass('invalid')
-    }
+      if (!requestorName.validity.valid) {
+        $('#full_name__wrap').addClass('invalid')
+        shouldSchedule = false
+      } else {
+        $('#full_name__wrap').removeClass('invalid')
+      }
 
-    if (!requestorEmail.validity.valid) {
-      $('#mail__wrap').addClass('invalid')
-      shouldSchedule = false
-    } else {
-      $('#mail__wrap').removeClass('invalid')
-    }
+      if (!requestorEmail.validity.valid) {
+        $('#mail__wrap').addClass('invalid')
+        shouldSchedule = false
+      } else {
+        $('#mail__wrap').removeClass('invalid')
+      }
 
-    if (shouldSchedule) {
-      $('#scheduleIcon').empty().append(getProcessingIcon())
-      $('#scheduleEventButton').attr('disabled', true).addClass('disabled')
+      if (shouldSchedule) {
+        $('#scheduleIcon').empty().append(getProcessingIcon())
+        $('#scheduleEventButton').attr('disabled', true).addClass('disabled')
 
-      google.script.run
-        .withSuccessHandler(() =>
-          showSuccessMark(requestorName.value, meetingSettings.displayName, requestorEmail.value)
-        )
-        .scheduleEvent(meetingSettings, timeBlock, requestorEmail.value)
-    }
-  })
+        google.script.run
+          .withSuccessHandler(() =>
+            showSuccessMark(requestorName.value, meetingSettings.displayName, requestorEmail.value)
+          )
+          .scheduleEvent(meetingSettings, timeBlock, requestorEmail.value)
+      }
+    })
 }
 
 function showSuccessMark(attendeeName, host, attendeeEmail) {
   $('#backButton').addClass('inactive')
   $('.details__wrap').addClass('inactive')
-  $('.container').empty().append(getCheckmark(attendeeName, host, attendeeEmail))
+  $('.container').append(getCheckmark(attendeeName, host, attendeeEmail))
 }
 
 function generateInfoBlock() {
@@ -284,64 +290,66 @@ function generateInfoBlock() {
 
   $('#meeting_info').prepend(getBackIcon())
 
-  document.getElementById('backButton').addEventListener('click', (event) => {
-    createRipple(event)
+  $('#backButton')
+    .off('click')
+    .on('click', (event) => {
+      createRipple(event)
 
-    $('.selectDateTime__wrap').removeClass('inactive')
-    $('.details__wrap').addClass('inactive')
-    $('#date-time').empty()
-    $('#timezone').empty()
-    $('#backButton').addClass('inactive')
-  })
+      $('.selectDateTime__wrap').removeClass('inactive')
+      $('.details__wrap').addClass('inactive')
+      $('#date-time').empty()
+      $('#timezone').empty()
+      $('#backButton').addClass('inactive')
+    })
 
   infoBlock.append(`
-  <h4 id="interviewer" class="info interviewer skeleton"></h4>
-  <h2 id="meetingType" class="meetingType skeleton"></h2>
-  <div id="duration" class="info__section">
-    ${getClockIcon()}
-    <h4 id="meetingDuration" class="info skeleton"></h4>
-  </div>
-  <div id="web-link" class="info__section">
-    ${getVideoIcon()}
-    <h4 class="info">Web conferencing details provided upon confirmation.</h4>
-  </div>
-  <div id="date-time" class="info__section">
-  </div>
-  <div id="timezone" class="info__section">
-  </div>
-`)
+    <h4 id="interviewer" class="info interviewer skeleton"></h4>
+    <h2 id="meetingType" class="meetingType skeleton"></h2>
+    <div id="duration" class="info__section">
+      ${getClockIcon()}
+      <h4 id="meetingDuration" class="info skeleton"></h4>
+    </div>
+    <div id="web-link" class="info__section">
+      ${getVideoIcon()}
+      <h4 class="info">Web conferencing details provided upon confirmation.</h4>
+    </div>
+    <div id="date-time" class="info__section">
+    </div>
+    <div id="timezone" class="info__section">
+    </div>
+  `)
 }
 
 function addTimeFrame() {
   return `
     ${getCalendarIcon()}
     <h4 id="date-time-value" class="info"></h4>
-`
+  `
 }
 
 function addTimezone() {
   return `
     ${getGlobeIcon()}
     <h4 class="info">${Intl.DateTimeFormat().resolvedOptions().timeZone.replace('/', ' / ').replace('_', ' ')}</h4>
-`
+  `
 }
 
 function getMonthArrow(id, classNames = '') {
   return `
-<button id="${id}" class="${id === 'decrement' ? 'disabled' : ''}">
-  <svg class="${classNames}" fill="#000000" viewBox="0 0 24 24">
-    <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-  </svg>
-</button>
-`
+  <button id="${id}" class="${id === 'decrement' ? 'disabled' : ''}">
+    <svg class="${classNames}" fill="#000000" viewBox="0 0 24 24">
+      <path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+    </svg>
+  </button>
+  `
 }
 
 function getLoadingSpinner() {
   return `
-  <div class="spinner-container">
-    <div class="spinner" />
-  </div>
-`
+    <div class="spinner-container">
+      <div class="spinner" />
+    </div>
+  `
 }
 
 function getProcessingIcon() {
@@ -365,60 +373,60 @@ function getSendIcon() {
 
 function getClockIcon() {
   return `
-  <svg class="clockIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
-    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z" />
-  </svg>
-`
+    <svg class="clockIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
+      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z" />
+    </svg>
+  `
 }
 
 function getVideoIcon() {
   return `
-  <svg class="videoIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px" style="min-width: 24px;">
-    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
-  </svg>
-`
+    <svg class="videoIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px" style="min-width: 24px;">
+      <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
+    </svg>
+  `
 }
 
 function getCalendarIcon() {
   return `
-  <svg class="calendarIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
-    <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z" />
-  </svg>
-`
+    <svg class="calendarIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
+      <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z" />
+    </svg>
+  `
 }
 
 function getGlobeIcon() {
   return `
-  <svg class="globeIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
-    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-  </svg>
-`
+    <svg class="globeIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+    </svg>
+  `
 }
 
 function getBackIcon() {
   return `
-  <div style="position: relative;">
-    <button id="backButton" class="backButton inactive">
-      <svg class="backIcon" fill="#800031" viewBox="0 0 24 24" height="40px" width="40px">
-        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
-      </svg>
-    </button>
-  </div>
-`
+    <div style="position: relative;">
+      <button id="backButton" class="backButton inactive">
+        <svg class="backIcon" fill="#800031" viewBox="0 0 24 24" height="40px" width="40px">
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+        </svg>
+      </button>
+    </div>
+  `
 }
 
 function getCheckmark(name, host, email) {
   return `
-  <div class="event__scheduled">
-    <div class="checkmark">
-      <svg viewBox="0 0 130.2 130.2">
-        <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
-        <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
-      </svg>
+    <div class="event__scheduled">
+      <div class="checkmark">
+        <svg viewBox="0 0 130.2 130.2">
+          <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+          <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+        </svg>
+      </div>
+      <p class="meetingBooked">${name}, you've booked a meeting with ${host}, please check ${email} for the meeting invitation.</p>
     </div>
-    <p class="meetingBooked">${name}, you've booked a meeting with ${host}, please check ${email} for the meeting invitation.</p>
-  </div>
-`
+  `
 }
 
 // helpers
@@ -439,26 +447,26 @@ function beforeToday(dateToCompare) {
 
 function addDayButtonsClickListener(buttonIds) {
   for (const buttonId of buttonIds) {
-    const button = document.getElementById(buttonId)
+    $(`#${buttonId}`)
+      .off('click')
+      .on('click', (event) => {
+        createRipple(event)
 
-    button.addEventListener('click', (event) => {
-      createRipple(event)
+        if (selectedDay?.id === buttonId) {
+          selectedDay.classList.remove('selected')
+          $('#time').removeClass('enabled')
+          selectedDay = undefined
 
-      if (selectedDay?.id === buttonId) {
-        selectedDay.classList.remove('selected')
-        $('#time').removeClass('enabled')
-        selectedDay = undefined
+          return
+        }
 
-        return
-      }
+        if (selectedDay) selectedDay.classList.remove('selected')
 
-      if (selectedDay) selectedDay.classList.remove('selected')
+        selectedDay = document.getElementById(buttonId)
+        selectedDay.classList.add('selected')
 
-      selectedDay = document.getElementById(buttonId)
-      selectedDay.classList.add('selected')
-
-      fetchAvailability(buttonId)
-    })
+        fetchAvailability(buttonId)
+      })
   }
 }
 
