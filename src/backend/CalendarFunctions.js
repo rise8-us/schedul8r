@@ -142,9 +142,12 @@ function relativeTimeWindowForHost(timeZone, startTime) {
     minute: 'numeric',
     second: 'numeric',
   })
-  const offset = 24 - new Date(Date.parse(formatter.format(start))).getHours()
+  const offsetDate = new Date(Date.parse(formatter.format(start)))
 
-  start.setHours(offset)
+  const offsetInHours = 24 - offsetDate.getHours()
+  const offsetInMinutes = offsetInHours > 0 ? offsetDate.getMinutes() : -offsetDate.getMinutes()
+
+  start.setHours(offsetInHours % 24, offsetInMinutes % 60)
 
   return start
 }
