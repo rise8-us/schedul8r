@@ -379,8 +379,37 @@ button.disabled:hover {
   background: gray;
 }
 
-.interviewer {
+.host__wrap {
+  display: flex;
+  column-gap: 16px;
+}
+
+img.host__photo {
+  height: 42px;
+  width: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.host__photo {
+  border: 1px solid lightgray;
+}
+
+.host {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  row-gap: 4px;
+}
+
+.host__name {
   min-height: 18px;
+  color: gray;
+}
+
+.host__title {
+  color: gray;
+  min-height: 16px;
 }
 
 .meetingType {

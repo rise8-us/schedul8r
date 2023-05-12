@@ -9,10 +9,9 @@ function getMeetingDetails(meetingId) {
 }
 
 function getRandomHost(meeting) {
-  const host =
-    typeof meeting.hosts === 'string' ? meeting.hosts : meeting.hosts[Math.floor(Math.random() * meeting.hosts.length)]
-
-  return mapObject(hosts, host)
+  return typeof meeting.hosts === 'string'
+    ? meeting.hosts
+    : meeting.hosts[Math.floor(Math.random() * meeting.hosts.length)]
 }
 
 function getMeetingHost(hostId) {

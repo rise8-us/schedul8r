@@ -12,11 +12,7 @@ let currentYear = today.getFullYear()
 let selectedDay
 let selectedTime
 let meetingSettings = {
-  title: '',
-  time: 0,
   duration: 0,
-  type: 'default',
-  host: {},
 }
 
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -46,17 +42,31 @@ function fetchMeetingInfo(location) {
   const { parameter } = location
 
   google.script.run
-    .withSuccessHandler(updateSettings)
+    .withSuccessHandler(setMeetingInfo)
     .withFailureHandler((error) => console.error(error))
     .getMeetingInfo(parameter.meetingType ?? 'default')
 }
 
-function updateSettings(newSettings) {
+function setMeetingInfo(newSettings) {
   meetingSettings = newSettings
 
   $('#meetingType').empty().removeClass('skeleton').append(newSettings.title)
   $('#meetingDuration').empty().removeClass('skeleton').append(`${newSettings.duration} min`)
-  $('#interviewer').empty().removeClass('skeleton').append(newSettings.displayName)
+
+  google.script.run
+    .withSuccessHandler(setMeetingHostInfo)
+    .withFailureHandler((error) => console.error(error))
+    .getProfileByEmail(newSettings.host)
+}
+
+function setMeetingHostInfo(hostInfo) {
+  const { name, photo, title } = hostInfo
+
+  $('#host__name').empty().removeClass('skeleton').append(name)
+  $('#host__title').empty().removeClass('skeleton').append(title)
+
+  if (photo) $('#host__photo').empty().removeClass('skeleton').attr('src', photo)
+  else $('#host__photo').remove()
 }
 
 function generateCalendarContent(monthInt, yearInt) {
@@ -271,9 +281,7 @@ function generateRequestorForm(timeBlock) {
         $('#scheduleEventButton').attr('disabled', true).addClass('disabled')
 
         google.script.run
-          .withSuccessHandler(() =>
-            showSuccessMark(requestorName.value, meetingSettings.displayName, requestorEmail.value)
-          )
+          .withSuccessHandler(() => showSuccessMark(requestorName.value, $('#host__name').text(), requestorEmail.value))
           .scheduleEvent(meetingSettings, timeBlock, requestorEmail.value)
       }
     })
@@ -303,7 +311,13 @@ function generateInfoBlock() {
     })
 
   infoBlock.append(`
-    <h4 id="interviewer" class="info interviewer skeleton"></h4>
+    <div id="host__wrap" class="host__wrap">
+      <image id="host__photo" class="host__photo skeleton"></image>
+      <div class="host">
+        <h4 id="host__name" class="host__name skeleton"></h4>
+        <h5 id="host__title" class="host__title skeleton"></h5>
+      </div>
+    </div>
     <h2 id="meetingType" class="meetingType skeleton"></h2>
     <div id="duration" class="info__section">
       ${getClockIcon()}
