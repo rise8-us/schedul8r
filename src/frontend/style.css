@@ -338,6 +338,16 @@ button.disabled:hover {
   cursor: default;
 }
 
+.week__skeleton {
+  justify-content: space-around;
+}
+
+div.day__skeleton {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+}
+
 .details__wrap {
   display: flex;
   flex-direction: column;
