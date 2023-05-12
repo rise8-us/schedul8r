@@ -281,9 +281,7 @@ function generateRequestorForm(timeBlock) {
         $('#scheduleEventButton').attr('disabled', true).addClass('disabled')
 
         google.script.run
-          .withSuccessHandler(() =>
-            showSuccessMark(requestorName.value, meetingSettings.displayName, requestorEmail.value)
-          )
+          .withSuccessHandler(() => showSuccessMark(requestorName.value, $('#host__name').text(), requestorEmail.value))
           .scheduleEvent(meetingSettings, timeBlock, requestorEmail.value)
       }
     })
