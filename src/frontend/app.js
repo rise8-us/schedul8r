@@ -202,7 +202,7 @@ function generateHourButtons(data) {
   }
 
   for (let timeBlock of data) {
-    const displayTime = new Date(timeBlock).toString().split(' ')[4].substring(0, 5)
+    const displayTime = getShortTime(timeBlock)
 
     timeContainer.append(`
     <div id="time__wrap-${timeBlock}" class="time_wrap">
@@ -521,13 +521,19 @@ function calculateNewYearAndMonth(year, month, type) {
 }
 
 function buildDurationString(start, duration) {
-  const startTime = new Date(start).toTimeString().substring(0, 5)
+  const startTimeArray = getShortTime(start).split(' ')
   const end = new Date(start + duration * 60000)
-  const endTime = end.toTimeString().substring(0, 5)
+  const endTime = getShortTime(end.getTime())
+
+  const startTime = startTimeArray[1] === endTime.split(' ')[1] ? startTimeArray[0] : startTimeArray.join(' ')
 
   return `${startTime} - ${endTime}, ${weekday[end.getDay()]}, ${
     months[end.getMonth()]
   } ${end.getDate()}, ${end.getFullYear()}`
+}
+
+function getShortTime(time) {
+  return new Date(time).toLocaleTimeString([], { timeStyle: 'short' })
 }
 
 // end helpers
