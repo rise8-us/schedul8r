@@ -53,6 +53,9 @@ function setMeetingInfo(newSettings) {
   $('#meetingType').empty().removeClass('skeleton').append(newSettings.title)
   $('#meetingDuration').empty().removeClass('skeleton').append(`${newSettings.duration} min`)
 
+  const { firstDayOfWeek, maxWeeks } = genCalendarData(currentMonth, currentYear)
+  generateDays(maxWeeks, currentYear, currentMonth, firstDayOfWeek)
+
   google.script.run
     .withSuccessHandler(setMeetingHostInfo)
     .withFailureHandler((error) => console.error(error))
@@ -70,7 +73,7 @@ function setMeetingHostInfo(hostInfo) {
 }
 
 function generateCalendarContent(monthInt, yearInt) {
-  const { firstDayOfWeek, maxWeeks } = genCalendarData(monthInt, yearInt)
+  const { maxWeeks } = genCalendarData(monthInt, yearInt)
 
   const calendar = $('#calendar')
   calendar.empty()
@@ -87,7 +90,21 @@ function generateCalendarContent(monthInt, yearInt) {
   calendar.append(`<div class="weekdays">${children}</div>`)
   calendar.append('<div id="calendar_weekdays" class="calendarWeekdays" />')
 
-  generateDays(maxWeeks, yearInt, monthInt, firstDayOfWeek)
+  generateCalendarSkeleton(maxWeeks)
+}
+
+function generateCalendarSkeleton(maxWeeks) {
+  const calendarWeekdays = $('#calendar_weekdays')
+
+  for (let i = 0; i < maxWeeks; i++) {
+    let children = ''
+
+    for (let j = 1; j <= 7; j++) {
+      children += '<div class="day__skeleton skeleton"></div>'
+    }
+
+    calendarWeekdays.append(`<div class="week week__skeleton">${children}</div>`)
+  }
 }
 
 function genCalendarData(month, year) {
