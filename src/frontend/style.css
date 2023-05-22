@@ -12,7 +12,7 @@ textarea {
   margin: 0;
 }
 
-.input_wrap {
+.input__wrap {
   position: relative;
   border: 1px solid #b2b2b2;
   border-radius: 8px;
@@ -69,9 +69,23 @@ button.disabled:hover {
   border-color: red;
 }
 
-.powered_by {
+.app__container {
+  padding: 6px;
+  overflow: hidden;
+}
+
+.branding__wrap {
+  position: sticky;
+  left: 100%;
+}
+
+.powered__by {
   color: white;
+  white-space: pre;
+  text-align: center;
   font-size: 8px;
+  min-height: 9px;
+  min-width: 49px;
 }
 
 .company {
@@ -83,10 +97,10 @@ button.disabled:hover {
 .branding {
   background-image: linear-gradient(0deg, #800031, red);
   position: absolute;
-  right: -58px;
+  right: -34px;
   padding: 12px 35px 8px 32px;
   display: flex;
-  top: -21px;
+  top: 3px;
   flex-direction: column;
   align-items: center;
   transform: rotate(45deg) scale(1);
@@ -97,10 +111,10 @@ button.disabled:hover {
 }
 
 .branding::before {
+  content: '';
   position: absolute;
   bottom: -1px;
   left: -2px;
-  content: '';
   height: 8px;
   width: 7px;
   background: #800031;
@@ -108,10 +122,10 @@ button.disabled:hover {
 }
 
 .branding::after {
+  content: '';
   position: absolute;
   bottom: 0;
   right: -5px;
-  content: '';
   height: 6px;
   width: 9px;
   background: #800031;
@@ -133,7 +147,7 @@ button.disabled:hover {
   max-width: 273px;
 }
 
-.info_block {
+.info__block {
   display: flex;
   flex-direction: column;
   padding: 16px;
@@ -152,19 +166,21 @@ button.disabled:hover {
 }
 
 .logo {
+  display: flex;
+  justify-content: center;
   max-height: 105px;
   padding: 32px;
   border-bottom: 1px solid lightgray;
 }
 
-.container {
+.selection__container {
   display: flex;
   flex-direction: column;
   padding: 24px;
   width: fit-content;
 }
 
-.selectDateTime__wrap {
+.datetime__wrap {
   display: flex;
   flex-direction: column;
 }
@@ -173,14 +189,23 @@ button.disabled:hover {
   display: none;
 }
 
+.calendar__title {
+  font-size: 20px;
+}
+
+.calendar__title::before {
+  content: 'Select Date and Time';
+}
+
 .calendar__wrap {
   display: flex;
   background: white;
   width: min-content;
+  min-width: 336px;
   margin-top: 32px;
 }
 
-.calendarContainer {
+.calendar__container {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -189,7 +214,7 @@ button.disabled:hover {
   min-width: 336px;
 }
 
-.timeContainer {
+.time__container {
   display: flex;
   flex-direction: column;
   row-gap: 4px;
@@ -203,27 +228,27 @@ button.disabled:hover {
   transition: max-width 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in 400ms;
 }
 
-.timeContainer.enabled {
+.time__container.enabled {
   margin: 16px -24px 8px 0;
   padding: 0 24px 0 16px;
-  max-width: 160px;
+  max-width: 200px;
   opacity: 1;
 }
 
-.time_wrap {
+.time__wrap {
   display: flex;
   column-gap: 4px;
-  min-width: 160px;
+  min-width: 200px;
 }
 
-.time_wrap.empty {
+.time__wrap.empty {
   height: 100%;
   text-align: center;
   align-items: center;
 }
 
-.time_confirm_btn {
-  width: 80px;
+.time__confirm-btn {
+  width: 100px;
   border-color: red;
   background-image: linear-gradient(0deg, #800031, red);
   color: white;
@@ -231,8 +256,8 @@ button.disabled:hover {
   border-radius: 6px;
 }
 
-.time_option {
-  min-width: 160px;
+.time__option {
+  min-width: 200px;
   min-height: 32px;
   border-radius: 6px;
   border: 1px solid;
@@ -242,13 +267,13 @@ button.disabled:hover {
   transition: min-width 200ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in 400ms;
 }
 
-.time_option:hover {
+.time__option:hover {
   background-color: #8000311a;
   border-color: red;
 }
 
-.time_option.selected {
-  min-width: 80px;
+.time__option.selected {
+  min-width: 100px;
   border-color: unset;
   box-shadow: unset;
   background: #5e5e5eab;
@@ -265,6 +290,10 @@ button.disabled:hover {
   transform: rotate(180deg);
 }
 
+.disabled > .left__icon {
+  fill: lightgray;
+}
+
 .weekdays,
 .week {
   display: flex;
@@ -277,7 +306,7 @@ button.disabled:hover {
   text-transform: uppercase;
 }
 
-.calendarWeekdays {
+.calendar__weekdays {
   display: flex;
   flex-direction: column;
   row-gap: 4px;
@@ -352,7 +381,7 @@ div.day__skeleton {
   display: flex;
   flex-direction: column;
   row-gap: 48px;
-  width: 536px;
+  width: 612px;
   min-height: 340px;
   margin-right: -24px;
 }
@@ -371,7 +400,7 @@ div.day__skeleton {
   resize: vertical;
 }
 
-.scheduleEvent {
+.schedule__event {
   display: flex;
   justify-content: space-around;
   background-image: linear-gradient(0deg, #800031, red);
@@ -381,11 +410,11 @@ div.day__skeleton {
   width: 160px;
 }
 
-.scheduleEvent.disabled {
+.schedule__event.disabled {
   background: gray;
 }
 
-.scheduleEvent.disabled:hover {
+.schedule__event.disabled:hover {
   background: gray;
 }
 
@@ -422,16 +451,22 @@ img.host__photo {
   min-height: 16px;
 }
 
-.meetingType {
+.meetingDuration__wrap {
+  display: flex;
+  flex-direction: column;
+  column-gap: 16px;
+}
+
+.meeting__type {
   min-height: 28px;
 }
 
-#meetingDuration {
+#meeting__duration {
   width: 48px;
   min-height: 16px;
 }
 
-.backButton {
+.back__btn {
   position: absolute;
   top: 16px;
   left: 16px;
@@ -449,7 +484,7 @@ img.host__photo {
   margin-right: -24px;
 }
 
-.meetingBooked {
+.meeting__booked {
   padding: 24px;
   text-align: center;
 }
@@ -462,12 +497,12 @@ span.ripple {
   background-color: rgba(255, 255, 255, 0.7);
 }
 
-.spinner-container {
+.spinner__container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  width: 160px;
+  width: 200px;
 }
 
 .spinner {
@@ -606,5 +641,55 @@ span.ripple {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+/* Styles for tablets */
+@media (min-width: 615px) and (max-width: 991px) {
+  .schedule__container {
+    flex-direction: column;
+  }
+
+  .meeting__info {
+    border: unset;
+    max-width: unset;
+  }
+
+  .logo {
+    padding: 0;
+  }
+
+  .info__block {
+    border-bottom: 1px solid lightgray;
+    row-gap: 8px;
+  }
+
+  .host__photo,
+  .host__title {
+    display: none;
+  }
+
+  .host__name,
+  .meeting__type {
+    text-align: center;
+  }
+
+  .meetingDuration__wrap {
+    flex-direction: row;
+    justify-content: center;
+    width: 612px;
+  }
+
+  .info__section {
+    justify-content: center;
+  }
+
+  .calendar__title {
+    text-align: right;
+    max-width: 332px;
+  }
+
+  .calendar__wrap {
+    margin-top: 0;
   }
 }
