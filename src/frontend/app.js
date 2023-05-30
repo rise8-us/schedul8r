@@ -14,6 +14,7 @@ let selectedTime
 let meetingSettings = {
   duration: 0,
 }
+let isMobile = false
 
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -36,6 +37,15 @@ $(function() {
   generateCalendarContent(currentMonth, currentYear)
   generateInfoBlock()
   google.script.url.getLocation(fetchMeetingInfo)
+
+  window.addEventListener('resize', () => {
+    const { width } = visualViewport
+    if (width < 615) {
+      if (selectedDay) {
+        console.error('TODO')
+      }
+    }
+  })
 })
 
 function fetchMeetingInfo(location) {
@@ -79,7 +89,7 @@ function generateCalendarContent(monthInt, yearInt) {
   calendar.empty()
   let children = ''
 
-  $('.calendar__wrap').append('<span id="timeContainer" class="time__container"/>')
+  $('#calendarWrap').append('<span id="timeContainer" class="time__container"/>')
 
   generateCalendarHeader(calendar, monthInt, yearInt)
 
@@ -307,7 +317,7 @@ function generateRequestorForm(timeBlock) {
 function showSuccessMark(attendeeName, host, attendeeEmail) {
   $('#backButton').addClass('inactive')
   $('#detailsWrap').addClass('inactive')
-  $('.selectionContainer').append(getCheckmark(attendeeName, host, attendeeEmail))
+  $('#selectionContainer').append(getCheckmark(attendeeName, host, attendeeEmail))
 }
 
 function generateInfoBlock() {
@@ -339,7 +349,7 @@ function generateInfoBlock() {
     <div class="meetingDuration__wrap">
       <div id="duration" class="info__section">
         ${getClockIcon()}
-        <h4 id="meetingDuration" class="info skeleton"></h4>
+        <h4 id="meetingDuration" class="info skeleton meeting__duration"></h4>
       </div>
       <div class="info__section">
         ${getVideoIcon()}
@@ -354,7 +364,7 @@ function generateInfoBlock() {
 function addTimeFrame() {
   return `
     ${getCalendarIcon()}
-    <h4 class="info"></h4>
+    <h4 id="dateTime-value" class="info"></h4>
   `
 }
 
@@ -385,7 +395,7 @@ function getLoadingSpinner() {
 
 function getProcessingIcon() {
   return `
-    <div id="loading" class="loading">
+    <div class="loading">
       <div></div>
       <div></div>
       <div></div>

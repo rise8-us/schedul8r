@@ -79,6 +79,26 @@ button.disabled:hover {
   left: 100%;
 }
 
+.branding__content {
+  position: relative;
+  top: 21px;
+  left: -11px;
+  z-index: 1;
+  display: block;
+  width: 160px;
+  padding: 9px 0 6px;
+  background-image: linear-gradient(0deg, #800031, red);
+  color: #fff;
+  box-shadow: 0 2px 4px 0 rgb(0 0 0/20%);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  pointer-events: auto;
+  transition: all 0.1s ease-in;
+  transform: rotate(45deg);
+}
+
 .powered__by {
   color: white;
   white-space: pre;
@@ -95,45 +115,48 @@ button.disabled:hover {
 }
 
 .branding {
-  background-image: linear-gradient(0deg, #800031, red);
   position: absolute;
-  right: -34px;
-  padding: 12px 35px 8px 32px;
-  display: flex;
-  top: 3px;
-  flex-direction: column;
-  align-items: center;
-  transform: rotate(45deg) scale(1);
-  transition: transform 100ms ease-in-out;
-  text-decoration: unset;
-  cursor: pointer;
-  box-shadow: 0px 2px 12px -2px #000000ff;
+  top: -5px;
+  right: -5px;
+  z-index: 1;
+  overflow: hidden;
+  width: 105px;
+  height: 105px;
+  text-decoration: none;
+  pointer-events: none;
+  transition: all 0.1s ease-in;
+  will-change: transform;
 }
 
 .branding::before {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: -2px;
-  height: 8px;
-  width: 7px;
-  background: #800031;
-  transform: rotate(45deg);
+  top: 0;
+  left: 0;
 }
 
 .branding::after {
+  bottom: 0;
+  right: 0;
+}
+
+.branding::after,
+.branding::before {
   content: '';
   position: absolute;
-  bottom: 0;
-  right: -5px;
-  height: 6px;
-  width: 9px;
-  background: #800031;
-  transform: rotate(45deg);
+  width: 5px;
+  height: 5px;
+  background-color: #800031;
+  transition: all 0.1s ease-in;
 }
 
 .branding:hover {
-  transform: rotate(45deg) scale(1.1);
+  transform: scale(1.04);
+}
+
+.branding:hover::after,
+.branding:hover::before {
+  width: 7px;
+  height: 7px;
+  background-color: #530020;
 }
 
 .schedule__container {
@@ -223,7 +246,7 @@ button.disabled:hover {
   overflow: hidden;
   opacity: 0;
   padding: 0;
-  max-height: 316px;
+  max-height: 292px;
   overflow-y: auto;
   transition: max-width 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in 400ms;
 }
@@ -381,7 +404,7 @@ div.day__skeleton {
   display: flex;
   flex-direction: column;
   row-gap: 48px;
-  width: 612px;
+  width: 576px;
   min-height: 340px;
   margin-right: -24px;
 }
@@ -461,7 +484,7 @@ img.host__photo {
   min-height: 28px;
 }
 
-#meeting__duration {
+.meeting__duration {
   width: 48px;
   min-height: 16px;
 }
@@ -537,10 +560,6 @@ span.ripple {
   position: absolute;
   transform: translateX(-100%);
   inset: 0px;
-}
-
-#loading {
-  width: 24px;
 }
 
 .loading {
@@ -677,7 +696,7 @@ span.ripple {
   .meetingDuration__wrap {
     flex-direction: row;
     justify-content: center;
-    width: 612px;
+    width: 100%;
   }
 
   .info__section {
@@ -686,7 +705,73 @@ span.ripple {
 
   .calendar__title {
     text-align: right;
-    max-width: 332px;
+    max-width: 364px;
+  }
+
+  .calendar__wrap {
+    margin-top: 0;
+  }
+
+  .calendar__container {
+    width: 364px;
+  }
+
+  .selection__container {
+    align-self: center;
+  }
+
+  .details__wrap {
+    width: 604px;
+  }
+}
+
+/* Styles for phones: not finished */
+@media (max-width: 614px) {
+  .app__container {
+    width: 100vw;
+    padding: 0;
+  }
+
+  .schedule__container {
+    flex-direction: column;
+  }
+
+  .meeting__info {
+    border: unset;
+    max-width: unset;
+  }
+
+  .logo {
+    padding: 0;
+  }
+
+  .selection__container,
+  .info__block {
+    max-width: 336px;
+    padding: 16px calc(calc(100% - 336px) / 2) 0px;
+  }
+
+  .info__block {
+    border-bottom: 1px solid lightgray;
+    row-gap: 8px;
+  }
+
+  .host__photo,
+  .host__title {
+    display: none;
+  }
+
+  .host__name,
+  .meeting__type {
+    text-align: center;
+  }
+
+  .calendar__title {
+    align-self: center;
+  }
+
+  .calendar__title::before {
+    content: 'Select a Day';
   }
 
   .calendar__wrap {
