@@ -1,47 +1,52 @@
 <!DOCTYPE html>
  <html lang="en">
   <head>
+    <title>Rise8 Meeting Scheduler</title>
     <base target="_top">
     <link rel="stylesheet" href="src/frontend/style.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   </head>
-  <body>
-    <div style="padding: 4px; overflow: hidden; width: fit-content; margin: auto;">
+  <body style="display: flex; justify-content: center; margin: 0;">
+    <div class="app__container">
       <div class="schedule__container">
-        <div id="meeting_info" class="meeting__info">
-          <img class="logo" src="https://d3v0px0pttie1i.cloudfront.net/uploads/organization/logo/3296535/895ca01b.png" alt="Rise8"/>
-          <div id="info_block" class="info_block"></div>
+        <span class="branding__wrap">
+          <a class="branding" href="https://rise8.us" target="_blank">
+            <div class="branding__content">
+              <p class="powered__by">POWERED BY</p>
+              <p class="company">Risers</p>
+          </div>
+          </a>
+        </span>
+        <div id="meetingInfo" class="meeting__info">
+          <div class="logo">
+            <img src="https://d3v0px0pttie1i.cloudfront.net/uploads/organization/logo/3296535/895ca01b.png" alt="Rise8" width="200px"/>
+          </div>
+          <div id="infoBlock" class="info__block"></div>
         </div>
-        <div id="container" class="container">
-              <span style="position: relative;">
-                <a class="branding" href="https://rise8.us" target="_blank">
-                  <p class="powered_by">POWERED BY</p>
-                  <p class="company">Risers</p>
-                </a>
-              </span>
-          <div class="selectDateTime__wrap">
-            <h3>Select a Date & Time</h3>
-            <div class="calendar__wrap">
-              <span class="calendarContainer" id="calendar"></span>
+        <div id="selectionContainer" class="selection__container">
+          <div id="dateTimeWrap" class="datetime__wrap">
+            <h3 class="calendar__title"></h3>
+            <div id="calendarWrap" class="calendar__wrap">
+              <span id="calendar" class="calendar__container"></span>
             </div>
           </div>
-          <div class="details__wrap inactive">
+          <div id="detailsWrap" class="details__wrap inactive">
             <h3>Input Details</h3>
             <div class="details__container">
-              <div id="full_name__wrap" class="input_wrap">
-                <label for="full_name">Name: &nbsp;*</label>
-                <input id="full_name" type="text" name="full_name" minlength="2" required autocomplete="name"></input>
+              <div id="fullNameWrap" class="input__wrap">
+                <label for="fullName">Name: &nbsp;*</label>
+                <input id="fullName" type="text" name="fullName" minlength="2" required autocomplete="name"></input>
               </div>
-              <div id="mail__wrap" class="input_wrap">
+              <div id="mailWrap" class="input__wrap">
                 <label for="mail">Email: &nbsp;*</label>
                 <input id="mail" type="email" name="mail" minlength="5" required autocomplete="email"></input>
               </div>
-              <div class="input_wrap">
+              <div class="input__wrap inactive">
                 <label for="question0">Please share anything that will help prepare for our meeting.</label>
                 <textarea id="question0" name="question0" style="margin-bottom: -3px;"></textarea>
               </div>
             </div>
-            <button id="scheduleEventButton" class="scheduleEvent">
+            <button id="scheduleEventButton" class="schedule__event">
               <h4>Schedule Event</h4>
               <div id="scheduleIcon" style="max-height: 24px;"></div>
             </button>

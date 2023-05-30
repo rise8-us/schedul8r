@@ -14,6 +14,7 @@ let selectedTime
 let meetingSettings = {
   duration: 0,
 }
+let isMobile = false
 
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -36,6 +37,15 @@ $(function() {
   generateCalendarContent(currentMonth, currentYear)
   generateInfoBlock()
   google.script.url.getLocation(fetchMeetingInfo)
+
+  window.addEventListener('resize', () => {
+    const { width } = visualViewport
+    if (width < 615) {
+      if (selectedDay) {
+        console.error('TODO: handle mobile view')
+      }
+    }
+  })
 })
 
 function fetchMeetingInfo(location) {
@@ -65,8 +75,8 @@ function setMeetingInfo(newSettings) {
 function setMeetingHostInfo(hostInfo) {
   const { name, photo, title } = hostInfo
 
-  $('#host__name').empty().removeClass('skeleton').append(name)
-  $('#host__title').empty().removeClass('skeleton').append(title)
+  $('#hostName').empty().removeClass('skeleton').append(name)
+  $('#hostTitle').empty().removeClass('skeleton').append(title)
 
   if (photo) $('#host__photo').empty().removeClass('skeleton').attr('src', photo)
   else $('#host__photo').remove()
@@ -79,7 +89,7 @@ function generateCalendarContent(monthInt, yearInt) {
   calendar.empty()
   let children = ''
 
-  $('.calendar__wrap').append('<span class="timeContainer" id="time"/>')
+  $('#calendarWrap').append('<span id="timeContainer" class="time__container"/>')
 
   generateCalendarHeader(calendar, monthInt, yearInt)
 
@@ -88,13 +98,13 @@ function generateCalendarContent(monthInt, yearInt) {
   }
 
   calendar.append(`<div class="weekdays">${children}</div>`)
-  calendar.append('<div id="calendar_weekdays" class="calendarWeekdays" />')
+  calendar.append('<div id="calendarWeekdays" class="calendar__weekdays" />')
 
   generateCalendarSkeleton(maxWeeks)
 }
 
 function generateCalendarSkeleton(maxWeeks) {
-  const calendarWeekdays = $('#calendar_weekdays')
+  const calendarWeekdays = $('#calendarWeekdays')
 
   for (let i = 0; i < maxWeeks; i++) {
     let children = ''
@@ -118,14 +128,14 @@ function genCalendarData(month, year) {
 function generateCalendarHeader(calendar, month, year) {
   const ids = ['decrement', 'increment']
   const header = `
-<div class="month">
-  <h2 id="month_year">${months[month]} ${year}</h2>
-  <div style="display: flex;">
-    ${getMonthArrow(ids[0], 'left__icon')}
-    ${getMonthArrow(ids[1], 'right__icon')}
-  </div>
-</div>
-`
+    <div class="month">
+      <h2 id="monthYear">${months[month]} ${year}</h2>
+      <div style="display: flex;">
+        ${getMonthArrow(ids[0], 'left__icon')}
+        ${getMonthArrow(ids[1], 'right__icon')}
+      </div>
+    </div>
+  `
 
   calendar.append(header)
 
@@ -156,7 +166,7 @@ function generateCalendarHeader(calendar, month, year) {
 }
 
 function generateDays(maxWeeks, yearInt, monthInt, firstDayOfWeek) {
-  const calendarWeekdays = $('#calendar_weekdays')
+  const calendarWeekdays = $('#calendarWeekdays')
   calendarWeekdays.empty()
 
   for (let i = 0; i < maxWeeks; i++) {
@@ -173,13 +183,13 @@ function generateDays(maxWeeks, yearInt, monthInt, firstDayOfWeek) {
       if (dateCheck < 1 || [0, 6].some((weekend) => day.getDay() === weekend)) disabled = 'disabled'
 
       children += `
-      <div class="day ${disabled}">
-        <button id="${id}" value={} class="day__btn" ${disabled}>
-          <p>${day.getDate()}</p>
-          ${!dateCheck ? '<span class="today" />' : ''}
-        </button>
-      </div>
-    `
+        <div class="day ${disabled}">
+          <button id="${id}" value={} class="day__btn" ${disabled}>
+            <p>${day.getDate()}</p>
+            ${!dateCheck ? '<span class="today" />' : ''}
+          </button>
+        </div>
+      `
     }
 
     calendarWeekdays.append(`<div class="week">${children}</div>`)
@@ -189,15 +199,15 @@ function generateDays(maxWeeks, yearInt, monthInt, firstDayOfWeek) {
 }
 
 function updateHeader(month, year) {
-  const calendarHeader = $('#month_year')
+  const calendarHeader = $('#monthYear')
   calendarHeader[0].innerText = `${months[month]} ${year}`
 }
 
 function fetchAvailability(dateString) {
-  $('#time').addClass('enabled')
-  const timeContainer = $('.timeContainer')
+  const timeContainer = $('#timeContainer')
 
   timeContainer.empty()
+  timeContainer.addClass('enabled')
   timeContainer.append(getLoadingSpinner())
 
   google.script.run
@@ -207,25 +217,25 @@ function fetchAvailability(dateString) {
 }
 
 function generateHourButtons(data) {
-  const timeContainer = $('.timeContainer')
+  const timeContainer = $('#timeContainer')
   timeContainer.empty()
 
   if (data.length === 0) {
     timeContainer.append(`
-    <div class="time_wrap empty">
-      <h2>There are no open time slots that are currently available for this day.</h2>
-    </div>
-  `)
+      <div class="time__wrap empty">
+        <h2>There are no open time slots that are currently available for this day.</h2>
+      </div>
+    `)
   }
 
   for (let timeBlock of data) {
     const displayTime = getShortTime(timeBlock)
 
     timeContainer.append(`
-    <div id="time__wrap-${timeBlock}" class="time_wrap">
-      <button id="${timeBlock}" value="${timeBlock}" class="time_option">${displayTime}</button>
-    </div>
-  `)
+      <div id="time__wrap-${timeBlock}" class="time__wrap">
+        <button id="${timeBlock}" value="${timeBlock}" class="time__option">${displayTime}</button>
+      </div>
+    `)
 
     $(`#${timeBlock}`)
       .off('click')
@@ -233,7 +243,7 @@ function generateHourButtons(data) {
         createRipple(event)
 
         if (+selectedTime?.id === timeBlock) {
-          $('.time_confirm_btn').remove()
+          $('#timeConfirmButton').remove()
           selectedTime.classList.remove('selected')
           selectedTime = undefined
 
@@ -241,10 +251,10 @@ function generateHourButtons(data) {
         }
 
         if (selectedTime) selectedTime.classList.remove('selected')
-        $('.time_confirm_btn').remove()
+        $('#timeConfirmButton').remove()
 
         const confirmBtn = $(`#time__wrap-${timeBlock}`)
-        confirmBtn.append('<button id="timeConfirmButton" class="time_confirm_btn">Confirm</button>')
+        confirmBtn.append('<button id="timeConfirmButton" class="time__confirm-btn">Confirm</button>')
 
         selectedTime = document.getElementById(timeBlock)
         selectedTime.classList.add('selected')
@@ -261,36 +271,36 @@ function generateHourButtons(data) {
 
 function generateRequestorForm(timeBlock) {
   $('#scheduleIcon').empty().append(getSendIcon())
-  $('.selectDateTime__wrap').addClass('inactive')
-  $('.details__wrap').removeClass('inactive')
+  $('#dateTimeWrap').addClass('inactive')
+  $('#detailsWrap').removeClass('inactive')
   $('#backButton').removeClass('inactive')
-  $('#date-time').empty().append(addTimeFrame())
-  $('#timezone').empty().append(addTimezone())
-  $('#date-time-value').empty().append(buildDurationString(timeBlock, meetingSettings.duration))
+  $('#dateTime').empty().append(addTimeFrame())
+  $('#timeZone').empty().append(addTimezone())
+  $('#dateTime-value').empty().append(buildDurationString(timeBlock, meetingSettings.duration))
 
   $('#scheduleEventButton')
     .off('click')
     .on('click', (event) => {
       createRipple(event)
 
-      const requestorName = document.getElementById('full_name')
+      const requestorName = document.getElementById('fullName')
       const requestorEmail = document.getElementById('mail')
       // TODO: Handle extra info
       // const requestorExtraInfo = document.getElementById("question0");
       let shouldSchedule = true
 
       if (!requestorName.validity.valid) {
-        $('#full_name__wrap').addClass('invalid')
+        $('#fullNameWrap').addClass('invalid')
         shouldSchedule = false
       } else {
-        $('#full_name__wrap').removeClass('invalid')
+        $('#fullNameWrap').removeClass('invalid')
       }
 
       if (!requestorEmail.validity.valid) {
-        $('#mail__wrap').addClass('invalid')
+        $('#mailWrap').addClass('invalid')
         shouldSchedule = false
       } else {
-        $('#mail__wrap').removeClass('invalid')
+        $('#mailWrap').removeClass('invalid')
       }
 
       if (shouldSchedule) {
@@ -298,7 +308,7 @@ function generateRequestorForm(timeBlock) {
         $('#scheduleEventButton').attr('disabled', true).addClass('disabled')
 
         google.script.run
-          .withSuccessHandler(() => showSuccessMark(requestorName.value, $('#host__name').text(), requestorEmail.value))
+          .withSuccessHandler(() => showSuccessMark(requestorName.value, $('#hostName').text(), requestorEmail.value))
           .scheduleEvent(meetingSettings, timeBlock, requestorEmail.value)
       }
     })
@@ -306,24 +316,24 @@ function generateRequestorForm(timeBlock) {
 
 function showSuccessMark(attendeeName, host, attendeeEmail) {
   $('#backButton').addClass('inactive')
-  $('.details__wrap').addClass('inactive')
-  $('.container').append(getCheckmark(attendeeName, host, attendeeEmail))
+  $('#detailsWrap').addClass('inactive')
+  $('#selectionContainer').append(getCheckmark(attendeeName, host, attendeeEmail))
 }
 
 function generateInfoBlock() {
-  const infoBlock = $('#info_block')
+  const infoBlock = $('#infoBlock')
 
-  $('#meeting_info').prepend(getBackIcon())
+  $('#meetingInfo').prepend(getBackIcon())
 
   $('#backButton')
     .off('click')
     .on('click', (event) => {
       createRipple(event)
 
-      $('.selectDateTime__wrap').removeClass('inactive')
-      $('.details__wrap').addClass('inactive')
-      $('#date-time').empty()
-      $('#timezone').empty()
+      $('#dateTimeWrap').removeClass('inactive')
+      $('#detailsWrap').addClass('inactive')
+      $('#dateTime').empty()
+      $('#timeZone').empty()
       $('#backButton').addClass('inactive')
     })
 
@@ -331,30 +341,30 @@ function generateInfoBlock() {
     <div id="host__wrap" class="host__wrap">
       <image id="host__photo" class="host__photo skeleton"></image>
       <div class="host">
-        <h4 id="host__name" class="host__name skeleton"></h4>
-        <h5 id="host__title" class="host__title skeleton"></h5>
+        <h4 id="hostName" class="host__name skeleton"></h4>
+        <h5 id="hostTitle" class="host__title skeleton"></h5>
       </div>
     </div>
-    <h2 id="meetingType" class="meetingType skeleton"></h2>
-    <div id="duration" class="info__section">
-      ${getClockIcon()}
-      <h4 id="meetingDuration" class="info skeleton"></h4>
+    <h2 id="meetingType" class="meeting__type skeleton"></h2>
+    <div class="meetingDuration__wrap">
+      <div id="duration" class="info__section">
+        ${getClockIcon()}
+        <h4 id="meetingDuration" class="info skeleton meeting__duration"></h4>
+      </div>
+      <div class="info__section">
+        ${getVideoIcon()}
+        <h4 class="info">Web conferencing details provided upon confirmation.</h4>
+      </div>
     </div>
-    <div id="web-link" class="info__section">
-      ${getVideoIcon()}
-      <h4 class="info">Web conferencing details provided upon confirmation.</h4>
-    </div>
-    <div id="date-time" class="info__section">
-    </div>
-    <div id="timezone" class="info__section">
-    </div>
+    <div id="dateTime" class="info__section"></div>
+    <div id="timeZone" class="info__section"></div>
   `)
 }
 
 function addTimeFrame() {
   return `
     ${getCalendarIcon()}
-    <h4 id="date-time-value" class="info"></h4>
+    <h4 id="dateTime-value" class="info"></h4>
   `
 }
 
@@ -377,7 +387,7 @@ function getMonthArrow(id, classNames = '') {
 
 function getLoadingSpinner() {
   return `
-    <div class="spinner-container">
+    <div class="spinner__container">
       <div class="spinner" />
     </div>
   `
@@ -385,7 +395,7 @@ function getLoadingSpinner() {
 
 function getProcessingIcon() {
   return `
-    <div id="loading" class="loading">
+    <div class="loading">
       <div></div>
       <div></div>
       <div></div>
@@ -404,7 +414,7 @@ function getSendIcon() {
 
 function getClockIcon() {
   return `
-    <svg class="clockIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
+    <svg fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
       <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z" />
     </svg>
   `
@@ -412,7 +422,7 @@ function getClockIcon() {
 
 function getVideoIcon() {
   return `
-    <svg class="videoIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px" style="min-width: 24px;">
+    <svg fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px" style="min-width: 24px;">
       <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
     </svg>
   `
@@ -420,7 +430,7 @@ function getVideoIcon() {
 
 function getCalendarIcon() {
   return `
-    <svg class="calendarIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
+    <svg fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
       <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z" />
     </svg>
   `
@@ -428,7 +438,7 @@ function getCalendarIcon() {
 
 function getGlobeIcon() {
   return `
-    <svg class="globeIcon" fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
+    <svg fill="#d3d3d3" viewBox="0 0 24 24" height="24px" width="24px">
       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
     </svg>
   `
@@ -437,8 +447,8 @@ function getGlobeIcon() {
 function getBackIcon() {
   return `
     <div style="position: relative;">
-      <button id="backButton" class="backButton inactive">
-        <svg class="backIcon" fill="#800031" viewBox="0 0 24 24" height="40px" width="40px">
+      <button id="backButton" class="back__btn inactive">
+        <svg fill="#800031" viewBox="0 0 24 24" height="40px" width="40px">
           <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
         </svg>
       </button>
@@ -455,7 +465,7 @@ function getCheckmark(name, host, email) {
           <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
         </svg>
       </div>
-      <p class="meetingBooked">${name}, you've booked a meeting with ${host}, please check ${email} for the meeting invitation.</p>
+      <p class="meeting__booked">${name}, you've booked a meeting with ${host}, please check ${email} for the meeting invitation.</p>
     </div>
   `
 }
@@ -485,7 +495,7 @@ function addDayButtonsClickListener(buttonIds) {
 
         if (selectedDay?.id === buttonId) {
           selectedDay.classList.remove('selected')
-          $('#time').removeClass('enabled')
+          $('#timeContainer').removeClass('enabled')
           selectedDay = undefined
 
           return
