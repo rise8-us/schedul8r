@@ -42,7 +42,7 @@ $(function() {
     const { width } = visualViewport
     if (width < 615) {
       if (selectedDay) {
-        console.error('TODO')
+        console.error('TODO: handle mobile view')
       }
     }
   })
@@ -54,7 +54,7 @@ function fetchMeetingInfo(location) {
   google.script.run
     .withSuccessHandler(setMeetingInfo)
     .withFailureHandler((error) => console.error(error))
-    .getMeetingInfo(parameter.meeting__type ?? 'default')
+    .getMeetingInfo(parameter.meetingType ?? 'default')
 }
 
 function setMeetingInfo(newSettings) {

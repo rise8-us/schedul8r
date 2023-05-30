@@ -31,7 +31,7 @@ Configuration takes place directly in a spreadsheet.
 Meeting fields
 
 ```js
-id:"sync_15", //this will be passed in as a url param e.g. http://script.google.../exec?meeting__type=<id>
+id:"sync_15", //this will be passed in as a url param e.g. http://script.google.../exec?meetingType=<id>
 calendar: "jwills@rise8.us", //can be a shared calendar or your primary calendar
 duration: 15, //duration of the meeting in minutes entered as an integer
 title: "15 min Sync up", //This is will be what is seen on the google calendar
@@ -44,9 +44,7 @@ hasBotGuest: false // boolean.  Add a bot if you want it to perform additional t
 Host fields
 
 ```js
-id: "jwills@rise8.us,, // this must match what is used in the hosts entry from the meeting object doesn't need to be email
-email: "jwills@rise8.us", // this is used to invite the host to the meeting if using a shared calendar
-displayName: "Jeffrey Wills", // This will be displayed on the calendar the guest uses to schedule a meeting
+email: "jwills@rise8.us", // this is used to invite the host to the meeting if using a shared calendar. this must match what is used in the hosts entry from the meeting object doesn't need to be email
 timeZone: "America/New_York", //TimeZone of the host. See link below for correct TZ indentifier values
 officeHours: "9,17", // comma separated values of the starting and ending hour of your day using the 24hr clock
 buffers: "15,15" // buffers in minutes ensures free time before or after the meeting
