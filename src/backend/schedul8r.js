@@ -4,6 +4,8 @@ const BOT_EMAIL = 'bot@rise8.us'
 function doGet() {
   var output = HtmlService.createTemplateFromFile('frontend/index').evaluate()
 
+  output.setTitle('Rise8 Meeting Scheduler')
+  output.setFaviconUrl('https://rise8.us/images/favicons/cropped-rise8-favicon-32x32.png')
   // TODO: scales for phone. uncomment when phone view complete.
   // output.addMetaTag('viewport', 'width=device-width, initial-scale=1')
 
