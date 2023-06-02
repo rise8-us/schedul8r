@@ -17,9 +17,8 @@ let meetingSettings = {
 }
 let isMobile = false
 
-const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-const months = [
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const MONTHS = [
   'January',
   'February',
   'March',
@@ -110,8 +109,8 @@ function generateCalendarContent(monthInt, yearInt) {
 
   generateCalendarHeader(calendar, monthInt, yearInt)
 
-  for (const weekday of weekdays) {
-    children += `<h6 class="weekday">${weekday}</h6>`
+  for (const weekday of WEEKDAYS) {
+    children += `<h6 class="weekday">${weekday.substring(0, 3)}</h6>`
   }
 
   calendar.append(`<div class="weekdays">${children}</div>`)
@@ -146,7 +145,7 @@ function generateCalendarHeader(calendar, month, year) {
   const ids = ['decrement', 'increment']
   const header = `
     <div class="month">
-      <h2 id="monthYear">${months[month]} ${year}</h2>
+      <h2 id="monthYear">${MONTHS[month]} ${year}</h2>
       <div style="display: flex;">
         ${getMonthArrow(ids[0], 'left__icon')}
         ${getMonthArrow(ids[1], 'right__icon')}
@@ -221,7 +220,7 @@ function generateDays(maxWeeks, yearInt, monthInt, firstDayOfWeek) {
 
 function updateHeader(month, year) {
   const calendarHeader = $('#monthYear')
-  calendarHeader[0].innerText = `${months[month]} ${year}`
+  calendarHeader[0].innerText = `${MONTHS[month]} ${year}`
 }
 
 function fetchAvailability(dateString) {
@@ -416,8 +415,8 @@ function addMobileTimeInfoBlock() {
   $('#time').prepend(`
     <div id="timeInfoWrap" class="time__info-wrap">
       <div class="time__info">
-        <p class="time__info-weekday">${day[date.getDay()]}</p>
-        <p>${date.getDate()} ${months[date.getMonth()]}, ${date.getFullYear()}</p>
+        <p class="time__info-weekday">${WEEKDAYS[date.getDay()]}</p>
+        <p>${date.getDate()} ${MONTHS[date.getMonth()]}, ${date.getFullYear()}</p>
       </div>
     </div>
   `)
@@ -669,8 +668,8 @@ function buildDurationString(start, duration) {
 
   const startTime = startTimeArray[1] === endTime.split(' ')[1] ? startTimeArray[0] : startTimeArray.join(' ')
 
-  return `${startTime} - ${endTime}, ${day[end.getDay()]}, ${
-    months[end.getMonth()]
+  return `${startTime} - ${endTime}, ${WEEKDAYS[end.getDay()]}, ${
+    MONTHS[end.getMonth()]
   } ${end.getDate()}, ${end.getFullYear()}`
 }
 

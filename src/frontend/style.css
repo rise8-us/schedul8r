@@ -344,6 +344,7 @@ button.disabled:hover {
 
 .weekday {
   font-weight: bold;
+  text-transform: uppercase;
 }
 
 .day {
@@ -475,6 +476,7 @@ img.host__photo {
   display: flex;
   flex-direction: column;
   column-gap: 16px;
+  row-gap: 8px;
 }
 
 .meeting__type {
