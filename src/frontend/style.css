@@ -208,10 +208,6 @@ button.disabled:hover {
   flex-direction: column;
 }
 
-.inactive {
-  display: none;
-}
-
 .calendar__title {
   font-size: 20px;
 }
@@ -224,7 +220,7 @@ button.disabled:hover {
   display: flex;
   background: white;
   width: min-content;
-  min-width: 336px;
+  min-width: 320px;
   margin-top: 32px;
 }
 
@@ -234,25 +230,19 @@ button.disabled:hover {
   flex-direction: column;
   background: inherit;
   width: 336px;
-  min-width: 336px;
+  min-width: 320px;
 }
 
 .time__container {
-  display: flex;
-  flex-direction: column;
-  row-gap: 4px;
   width: 100%;
   max-width: 0;
-  overflow: hidden;
   opacity: 0;
-  padding: 0;
-  max-height: 292px;
-  overflow-y: auto;
+  overflow: hidden;
   transition: max-width 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in 400ms;
 }
 
 .time__container.enabled {
-  margin: 16px -24px 8px 0;
+  margin: 32px -24px 0 0;
   padding: 0 24px 0 16px;
   max-width: 200px;
   opacity: 1;
@@ -260,17 +250,28 @@ button.disabled:hover {
 
 .time__wrap {
   display: flex;
+  flex-direction: column;
+  row-gap: 4px;
+  padding: 0 24px 0 0;
+  width: 100%;
+  height: 100%;
+  max-height: 283px;
+  overflow: hidden auto;
+}
+
+.time__button-wrap {
+  display: flex;
   column-gap: 4px;
   min-width: 200px;
 }
 
-.time__wrap.empty {
+.time__button-wrap.empty {
   height: 100%;
   text-align: center;
   align-items: center;
 }
 
-.time__confirm-btn {
+.time__button-confirm {
   width: 100px;
   border-color: red;
   background-image: linear-gradient(0deg, #800031, red);
@@ -279,7 +280,7 @@ button.disabled:hover {
   border-radius: 6px;
 }
 
-.time__option {
+.time__button-option {
   min-width: 200px;
   min-height: 32px;
   border-radius: 6px;
@@ -287,15 +288,15 @@ button.disabled:hover {
   border-color: #800031;
   color: #800031;
   font-weight: bold;
-  transition: min-width 200ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in 400ms;
+  transition: min-width 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in 400ms;
 }
 
-.time__option:hover {
+.time__button-option:hover {
   background-color: #8000311a;
   border-color: red;
 }
 
-.time__option.selected {
+.time__button-option.selected {
   min-width: 100px;
   border-color: unset;
   box-shadow: unset;
@@ -409,10 +410,6 @@ div.day__skeleton {
   margin-right: -24px;
 }
 
-.details__wrap.inactive {
-  display: none;
-}
-
 .details__container {
   display: flex;
   flex-direction: column;
@@ -489,7 +486,7 @@ img.host__photo {
   min-height: 16px;
 }
 
-.back__btn {
+.back__button {
   position: absolute;
   top: 16px;
   left: 16px;
@@ -663,6 +660,10 @@ span.ripple {
   }
 }
 
+.hidden {
+  display: none;
+}
+
 /* Styles for tablets */
 @media (min-width: 615px) and (max-width: 991px) {
   .schedule__container {
@@ -725,8 +726,13 @@ span.ripple {
   }
 }
 
-/* Styles for phones: not finished */
+/* Styles for phones */
 @media (max-width: 614px) {
+  .back__button {
+    height: 48px;
+    width: 48px;
+  }
+
   .app__container {
     width: 100vw;
     padding: 0;
@@ -734,6 +740,7 @@ span.ripple {
 
   .schedule__container {
     flex-direction: column;
+    border-radius: 0;
   }
 
   .meeting__info {
@@ -745,10 +752,17 @@ span.ripple {
     padding: 0;
   }
 
-  .selection__container,
+  /* .selection__container,
   .info__block {
     max-width: 336px;
     padding: 16px calc(calc(100% - 336px) / 2) 0px;
+  } */
+
+  .selection__container {
+    padding: 0;
+    padding-top: 24px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .info__block {
@@ -776,5 +790,88 @@ span.ripple {
 
   .calendar__wrap {
     margin-top: 0;
+    width: 100%;
+  }
+
+  .time__container.enabled {
+    margin: -24px 0 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    max-height: 100vh;
+    max-width: 100vw;
+  }
+
+  .time__wrap {
+    max-height: calc(100vh - 75px - 24px - 32px);
+    max-width: calc(100vw - 16px);
+    padding: 16px;
+  }
+
+  .spinner__container {
+    height: calc(100% - 75px - 24px);
+    width: 100%;
+  }
+
+  .time__button-wrap,
+  .time__button-confirm {
+    width: 100%;
+  }
+
+  .time__info-wrap {
+    text-align: center;
+    border-bottom: 1px solid lightgray;
+    overflow-y: scroll;
+  }
+
+  .time__info {
+    display: flex;
+    flex-direction: column;
+    row-gap: 4px;
+    margin: 24px;
+  }
+
+  .time__info-weekday {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .time__button-option,
+  .time__button-confirm {
+    width: 100%;
+    min-width: calc(100% - 16px);
+    max-width: calc(100% - 16px);
+    height: 48px;
+    font-size: 18px;
+  }
+
+  .time__button-option.selected {
+    min-width: calc(50% - 16px);
+  }
+
+  .time__button-confirm {
+    margin-right: 16px;
+    min-width: calc(50% - 16px);
+  }
+
+  .mobile__duration {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .details__wrap {
+    width: 100vw;
+    padding: 8px;
+  }
+
+  .input__wrap {
+    width: calc(100% - 16px);
+  }
+
+  .event__scheduled {
+    width: 100vw;
   }
 }

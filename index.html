@@ -18,19 +18,20 @@
           </a>
         </span>
         <div id="meetingInfo" class="meeting__info">
-          <div class="logo">
+          <div id="logo" class="logo">
             <img src="https://d3v0px0pttie1i.cloudfront.net/uploads/organization/logo/3296535/895ca01b.png" alt="Rise8" width="200px"/>
           </div>
           <div id="infoBlock" class="info__block"></div>
         </div>
         <div id="selectionContainer" class="selection__container">
           <div id="dateTimeWrap" class="datetime__wrap">
-            <h3 class="calendar__title"></h3>
+            <h3 id="calendarTitle" class="calendar__title"></h3>
             <div id="calendarWrap" class="calendar__wrap">
               <span id="calendar" class="calendar__container"></span>
+              <span id="time" class="time__container"></span>
             </div>
           </div>
-          <div id="detailsWrap" class="details__wrap inactive">
+          <div id="detailsWrap" class="details__wrap hidden">
             <h3>Input Details</h3>
             <div class="details__container">
               <div id="fullNameWrap" class="input__wrap">
@@ -41,7 +42,7 @@
                 <label for="mail">Email: &nbsp;*</label>
                 <input id="mail" type="email" name="mail" minlength="5" required autocomplete="email"></input>
               </div>
-              <div class="input__wrap inactive">
+              <div class="input__wrap hidden">
                 <label for="question0">Please share anything that will help prepare for our meeting.</label>
                 <textarea id="question0" name="question0" style="margin-bottom: -3px;"></textarea>
               </div>
