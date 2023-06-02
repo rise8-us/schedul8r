@@ -11,14 +11,14 @@ let currentMonth = today.getMonth()
 let currentYear = today.getFullYear()
 let selectedDay
 let selectedTime
+let confirmMeeting
 let meetingSettings = {
   duration: 0,
 }
 let isMobile = false
 
-const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-const months = [
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const MONTHS = [
   'January',
   'February',
   'March',
@@ -34,18 +34,34 @@ const months = [
 ]
 
 $(function() {
+  setIsMobile()
+
   generateCalendarContent(currentMonth, currentYear)
   generateInfoBlock()
-  google.script.url.getLocation(fetchMeetingInfo)
 
   window.addEventListener('resize', () => {
-    const { width } = visualViewport
-    if (width < 615) {
-      if (selectedDay) {
-        console.error('TODO: handle mobile view')
+    setIsMobile()
+
+    if (isMobile) {
+      handleMobileView()
+    } else {
+      $('#logo').removeClass('hidden')
+      $('#infoBlock').removeClass('hidden')
+
+      $('#mobileDuration').remove()
+      $('#timeInfoWrap').remove()
+
+      selectedDay && $('#time').addClass('enabled')
+
+      if (!confirmMeeting) {
+        $('#calendar').removeClass('hidden')
+        $('#calendarTitle').removeClass('hidden')
+        $('#backButton').addClass('hidden')
       }
     }
   })
+
+  google.script.url.getLocation(fetchMeetingInfo)
 })
 
 function fetchMeetingInfo(location) {
@@ -63,7 +79,7 @@ function setMeetingInfo(newSettings) {
   $('#meetingType').empty().removeClass('skeleton').append(newSettings.title)
   $('#meetingDuration').empty().removeClass('skeleton').append(`${newSettings.duration} min`)
 
-  const { firstDayOfWeek, maxWeeks } = genCalendarData(currentMonth, currentYear)
+  const { firstDayOfWeek, maxWeeks } = generateCalendarData(currentMonth, currentYear)
   generateDays(maxWeeks, currentYear, currentMonth, firstDayOfWeek)
 
   google.script.run
@@ -78,23 +94,23 @@ function setMeetingHostInfo(hostInfo) {
   $('#hostName').empty().removeClass('skeleton').append(name)
   $('#hostTitle').empty().removeClass('skeleton').append(title)
 
-  if (photo) $('#host__photo').empty().removeClass('skeleton').attr('src', photo)
-  else $('#host__photo').remove()
+  if (photo) $('#hostPhoto').empty().removeClass('skeleton').attr('src', photo)
+  else $('#hostPhoto').remove()
 }
 
 function generateCalendarContent(monthInt, yearInt) {
-  const { maxWeeks } = genCalendarData(monthInt, yearInt)
+  const { maxWeeks } = generateCalendarData(monthInt, yearInt)
 
   const calendar = $('#calendar')
   calendar.empty()
   let children = ''
 
-  $('#calendarWrap').append('<span id="timeContainer" class="time__container"/>')
+  $('#time').empty().append('<span id="timeWrap" class="time__wrap"/>')
 
   generateCalendarHeader(calendar, monthInt, yearInt)
 
-  for (const weekday of weekdays) {
-    children += `<h6 class="weekday">${weekday}</h6>`
+  for (const weekday of WEEKDAYS) {
+    children += `<h6 class="weekday">${weekday.substring(0, 3)}</h6>`
   }
 
   calendar.append(`<div class="weekdays">${children}</div>`)
@@ -117,7 +133,7 @@ function generateCalendarSkeleton(maxWeeks) {
   }
 }
 
-function genCalendarData(month, year) {
+function generateCalendarData(month, year) {
   const firstOfMonth = new Date(year, month, 1)
   const firstDayOfWeek = firstOfMonth.getDay()
   const maxWeeks = Math.ceil((firstDayOfWeek + 35) / 7)
@@ -129,7 +145,7 @@ function generateCalendarHeader(calendar, month, year) {
   const ids = ['decrement', 'increment']
   const header = `
     <div class="month">
-      <h2 id="monthYear">${months[month]} ${year}</h2>
+      <h2 id="monthYear">${MONTHS[month]} ${year}</h2>
       <div style="display: flex;">
         ${getMonthArrow(ids[0], 'left__icon')}
         ${getMonthArrow(ids[1], 'right__icon')}
@@ -157,7 +173,7 @@ function generateCalendarHeader(calendar, month, year) {
         currentYear = newYear
         currentMonth = newMonth
 
-        const { firstDayOfWeek, maxWeeks } = genCalendarData(newMonth, newYear)
+        const { firstDayOfWeek, maxWeeks } = generateCalendarData(newMonth, newYear)
 
         updateHeader(newMonth, newYear)
         generateDays(maxWeeks, newYear, newMonth, firstDayOfWeek)
@@ -184,7 +200,7 @@ function generateDays(maxWeeks, yearInt, monthInt, firstDayOfWeek) {
 
       children += `
         <div class="day ${disabled}">
-          <button id="${id}" value={} class="day__btn" ${disabled}>
+          <button id="${id}" value="${day}" class="day__btn" ${disabled}>
             <p>${day.getDate()}</p>
             ${!dateCheck ? '<span class="today" />' : ''}
           </button>
@@ -200,28 +216,32 @@ function generateDays(maxWeeks, yearInt, monthInt, firstDayOfWeek) {
 
 function updateHeader(month, year) {
   const calendarHeader = $('#monthYear')
-  calendarHeader[0].innerText = `${months[month]} ${year}`
+  calendarHeader[0].innerText = `${MONTHS[month]} ${year}`
 }
 
 function fetchAvailability(dateString) {
-  const timeContainer = $('#timeContainer')
+  const time = $('#time')
+  const timeWrap = $('#timeWrap')
 
-  timeContainer.empty()
-  timeContainer.addClass('enabled')
-  timeContainer.append(getLoadingSpinner())
+  time.addClass('enabled')
+
+  timeWrap.empty()
+  timeWrap.append(getLoadingSpinner())
 
   google.script.run
     .withSuccessHandler(generateHourButtons)
-    .withFailureHandler((error) => console.error(error))
+    .withFailureHandler(console.error)
     .preview(meetingSettings, dateString)
 }
 
 function generateHourButtons(data) {
-  const timeContainer = $('#timeContainer')
-  timeContainer.empty()
+  const timeWrap = $('#timeWrap')
+  timeWrap.empty()
+
+  isMobile && addMobileDurationInfoBlock()
 
   if (data.length === 0) {
-    timeContainer.append(`
+    timeWrap.append(`
       <div class="time__wrap empty">
         <h2>There are no open time slots that are currently available for this day.</h2>
       </div>
@@ -231,9 +251,9 @@ function generateHourButtons(data) {
   for (let timeBlock of data) {
     const displayTime = getShortTime(timeBlock)
 
-    timeContainer.append(`
-      <div id="time__wrap-${timeBlock}" class="time__wrap">
-        <button id="${timeBlock}" value="${timeBlock}" class="time__option">${displayTime}</button>
+    timeWrap.append(`
+      <div id="timeWrap-${timeBlock}" class="time__button-wrap">
+        <button id="${timeBlock}" value="${timeBlock}" class="time__button-option">${displayTime}</button>
       </div>
     `)
 
@@ -253,8 +273,8 @@ function generateHourButtons(data) {
         if (selectedTime) selectedTime.classList.remove('selected')
         $('#timeConfirmButton').remove()
 
-        const confirmBtn = $(`#time__wrap-${timeBlock}`)
-        confirmBtn.append('<button id="timeConfirmButton" class="time__confirm-btn">Confirm</button>')
+        const confirmBtn = $(`#timeWrap-${timeBlock}`)
+        confirmBtn.append('<button id="timeConfirmButton" class="time__button-confirm">Confirm</button>')
 
         selectedTime = document.getElementById(timeBlock)
         selectedTime.classList.add('selected')
@@ -262,6 +282,8 @@ function generateHourButtons(data) {
         $('#timeConfirmButton')
           .off('click')
           .on('click', (event) => {
+            confirmMeeting = true
+
             createRipple(event)
             generateRequestorForm(timeBlock)
           })
@@ -271,9 +293,11 @@ function generateHourButtons(data) {
 
 function generateRequestorForm(timeBlock) {
   $('#scheduleIcon').empty().append(getSendIcon())
-  $('#dateTimeWrap').addClass('inactive')
-  $('#detailsWrap').removeClass('inactive')
-  $('#backButton').removeClass('inactive')
+  $('#dateTimeWrap').addClass('hidden')
+  $('#detailsWrap').removeClass('hidden')
+  $('#backButton').removeClass('hidden')
+  $('#logo').removeClass('hidden')
+  $('#infoBlock').removeClass('hidden')
   $('#dateTime').empty().append(addTimeFrame())
   $('#timeZone').empty().append(addTimezone())
   $('#dateTime-value').empty().append(buildDurationString(timeBlock, meetingSettings.duration))
@@ -315,8 +339,8 @@ function generateRequestorForm(timeBlock) {
 }
 
 function showSuccessMark(attendeeName, host, attendeeEmail) {
-  $('#backButton').addClass('inactive')
-  $('#detailsWrap').addClass('inactive')
+  $('#backButton').addClass('hidden')
+  $('#detailsWrap').addClass('hidden')
   $('#selectionContainer').append(getCheckmark(attendeeName, host, attendeeEmail))
 }
 
@@ -330,16 +354,34 @@ function generateInfoBlock() {
     .on('click', (event) => {
       createRipple(event)
 
-      $('#dateTimeWrap').removeClass('inactive')
-      $('#detailsWrap').addClass('inactive')
       $('#dateTime').empty()
       $('#timeZone').empty()
-      $('#backButton').addClass('inactive')
+
+      if (isMobile) {
+        if (confirmMeeting) {
+          confirmMeeting = false
+        } else if (selectedDay || selectedTime) {
+          selectedDay?.classList?.remove('selected')
+          $('#timeConfirmButton').remove()
+          $('#timeWrap').empty()
+
+          selectedDay = undefined
+          selectedTime = undefined
+        }
+
+        handleMobileView()
+      } else {
+        confirmMeeting && (confirmMeeting = false)
+
+        $('#backButton').addClass('hidden')
+        $('#dateTimeWrap').removeClass('hidden')
+        $('#detailsWrap').addClass('hidden')
+      }
     })
 
   infoBlock.append(`
-    <div id="host__wrap" class="host__wrap">
-      <image id="host__photo" class="host__photo skeleton"></image>
+    <div class="host__wrap">
+      <image id="hostPhoto" class="host__photo skeleton"></image>
       <div class="host">
         <h4 id="hostName" class="host__name skeleton"></h4>
         <h5 id="hostTitle" class="host__title skeleton"></h5>
@@ -358,6 +400,34 @@ function generateInfoBlock() {
     </div>
     <div id="dateTime" class="info__section"></div>
     <div id="timeZone" class="info__section"></div>
+  `)
+}
+
+function addMobileTimeInfoBlock() {
+  $('#timeInfoWrap').remove()
+
+  const date = new Date(selectedDay.value)
+
+  $('#time').prepend(`
+    <div id="timeInfoWrap" class="time__info-wrap">
+      <div class="time__info">
+        <p class="time__info-weekday">${WEEKDAYS[date.getDay()]}</p>
+        <p>${date.getDate()} ${MONTHS[date.getMonth()]}, ${date.getFullYear()}</p>
+      </div>
+    </div>
+  `)
+}
+
+function addMobileDurationInfoBlock() {
+  const timeWrap = $('#timeWrap')
+
+  $('#mobileDuration').remove()
+
+  timeWrap.prepend(`
+    <div id="mobileDuration" class="mobile__duration">
+      <h2>Select a Time</h2>
+      <p>Duration: ${meetingSettings.duration}min</p>
+    </div>
   `)
 }
 
@@ -447,7 +517,7 @@ function getGlobeIcon() {
 function getBackIcon() {
   return `
     <div style="position: relative;">
-      <button id="backButton" class="back__btn inactive">
+      <button id="backButton" class="back__button hidden">
         <svg fill="#800031" viewBox="0 0 24 24" height="40px" width="40px">
           <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
         </svg>
@@ -465,12 +535,48 @@ function getCheckmark(name, host, email) {
           <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
         </svg>
       </div>
-      <p class="meeting__booked">${name}, you've booked a meeting with ${host}, please check ${email} for the meeting invitation.</p>
+      <p class="meeting__booked">${name}, you've booked a meeting with ${host}, please check your email, ${email} or your google calendar for the meeting invitation.</p>
     </div>
   `
 }
 
 // helpers
+
+function handleMobileView() {
+  if (confirmMeeting) {
+    $('#logo').removeClass('hidden')
+    $('#infoBlock').removeClass('hidden')
+  } else if (selectedDay) {
+    $('#calendar').addClass('hidden')
+    $('#logo').addClass('hidden')
+    $('#infoBlock').addClass('hidden')
+    $('#calendarTitle').addClass('hidden')
+    $('#detailsWrap').addClass('hidden')
+
+    $('#backButton').removeClass('hidden')
+    $('#dateTimeWrap').removeClass('hidden')
+
+    $('#time').addClass('enabled')
+
+    addMobileTimeInfoBlock()
+    addMobileDurationInfoBlock()
+  } else {
+    $('#backButton').addClass('hidden')
+
+    $('#logo').removeClass('hidden')
+    $('#infoBlock').removeClass('hidden')
+    $('#timeInfoWrap').remove()
+    $('#time').removeClass('enabled')
+    $('#calendar').removeClass('hidden')
+    $('#calendarTitle').removeClass('hidden')
+  }
+}
+
+function setIsMobile() {
+  const { width } = visualViewport
+
+  isMobile = width < 615
+}
 
 function guaranteeTwoDigits(numberToValidate) {
   return numberToValidate.toString().padStart(2, '0')
@@ -493,9 +599,11 @@ function addDayButtonsClickListener(buttonIds) {
       .on('click', (event) => {
         createRipple(event)
 
+        selectedTime = undefined
+
         if (selectedDay?.id === buttonId) {
           selectedDay.classList.remove('selected')
-          $('#timeContainer').removeClass('enabled')
+          $('#time').removeClass('enabled')
           selectedDay = undefined
 
           return
@@ -505,6 +613,8 @@ function addDayButtonsClickListener(buttonIds) {
 
         selectedDay = document.getElementById(buttonId)
         selectedDay.classList.add('selected')
+
+        isMobile && handleMobileView()
 
         fetchAvailability(buttonId)
       })
@@ -554,8 +664,8 @@ function buildDurationString(start, duration) {
 
   const startTime = startTimeArray[1] === endTime.split(' ')[1] ? startTimeArray[0] : startTimeArray.join(' ')
 
-  return `${startTime} - ${endTime}, ${weekday[end.getDay()]}, ${
-    months[end.getMonth()]
+  return `${startTime} - ${endTime}, ${WEEKDAYS[end.getDay()]}, ${
+    MONTHS[end.getMonth()]
   } ${end.getDate()}, ${end.getFullYear()}`
 }
 
