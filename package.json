@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "clean": "rm -rf dist",
-    "build:api": "cp ./src/appsscript.json dist/appsscript.json && cp -r ./src/backend/ dist/backend/",
-    "dev": "vite",
     "build": "npm run clean && vite build && npm run build:api",
+    "build:api": "cp ./src/appsscript.json dist/appsscript.json && cp -r ./src/backend/ dist/backend/",
     "build:push": "npm run build && clasp push",
+    "clean": "rm -rf dist",
+    "dev": "vite",
+    "deploy": "npm run build:push && ./scripts/deploy.sh",
     "lint:fix": "eslint src/. --fix",
     "preview": "vite preview"
   },

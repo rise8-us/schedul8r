@@ -24,6 +24,14 @@
 
 To deploy locally, execute `npm run build:push`. This will bundle up everything in the /src folder and push it to the Google App Script with the ID in your .clasp.json.
 
+### Deploying a static release
+
+If you want to use a specific descriptor name, the script looks for `RELEASE_NAME` from the environment. If it is not set it will default to `schedul8r`. Running the following command will create a new deployment with the specific descriptor from above. If the deployment already exists then it will update the existing deployment with the latest code.
+
+```sh
+npm run deploy
+```
+
 # Configuring meetings
 
 Configuration takes place directly in a spreadsheet.
