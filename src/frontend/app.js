@@ -190,22 +190,18 @@ function generateDays(maxWeeks, yearInt, monthInt, firstDayOfWeek) {
     let buttonIds = []
 
     for (let j = 1; j <= 7; j++) {
-      const dayDate = new Date(yearInt, monthInt, i * 7 + j - firstDayOfWeek)
-      const dateCheck = beforeToday(dayDate)
-      const id = [
-        dayDate.getFullYear(),
-        guaranteeTwoDigits(dayDate.getMonth()),
-        guaranteeTwoDigits(dayDate.getDate()),
-      ].join('-')
+      const day = new Date(yearInt, monthInt, i * 7 + j - firstDayOfWeek)
+      const dateCheck = beforeToday(day)
+      const id = [day.getFullYear(), guaranteeTwoDigits(day.getMonth()), guaranteeTwoDigits(day.getDate())].join('-')
       let disabled = ''
 
       buttonIds.push(id)
-      if (dateCheck < 1 || [0, 6].some((weekend) => dayDate.getDay() === weekend)) disabled = 'disabled'
+      if (dateCheck < 1 || [0, 6].some((weekend) => day.getDay() === weekend)) disabled = 'disabled'
 
       children += `
         <div class="day ${disabled}">
-          <button id="${id}" value="${dayDate}" class="day__btn" ${disabled}>
-            <p>${dayDate.getDate()}</p>
+          <button id="${id}" value="${day}" class="day__btn" ${disabled}>
+            <p>${day.getDate()}</p>
             ${!dateCheck ? '<span class="today" />' : ''}
           </button>
         </div>
