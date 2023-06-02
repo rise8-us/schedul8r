@@ -754,12 +754,6 @@ span.ripple {
     padding: 0;
   }
 
-  /* .selection__container,
-  .info__block {
-    max-width: 336px;
-    padding: 16px calc(calc(100% - 336px) / 2) 0px;
-  } */
-
   .selection__container {
     padding: 0;
     padding-top: 24px;
