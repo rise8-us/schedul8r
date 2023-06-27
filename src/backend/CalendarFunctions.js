@@ -62,7 +62,6 @@ function scheduleEvent(meeting, startString, guestEmail) {
 
   const resource = {
     start: { dateTime: startTime.toISOString() },
-    end: { dateTime: endTime.toISOString() },
     attendees: attendees.map((email) => ({ email })),
     conferenceData: {
       createRequest: {
@@ -74,6 +73,14 @@ function scheduleEvent(meeting, startString, guestEmail) {
     },
     summary: title,
     description: description,
+    extendedProperties: {
+      private: {
+        tag: meeting.tag,
+        type: meeting.assessmentType
+      },
+      shared: {}
+    }
+
   }
 
   Calendar.Events.insert(resource, calendar.getId(), {

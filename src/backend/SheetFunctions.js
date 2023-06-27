@@ -23,12 +23,10 @@ function openDB() {
 
   if (files.hasNext()) {
     const file = files.next()
-    const sheet = SpreadsheetApp.open(file)
-
-    return sheet
-  } else {
-    Logger.log('File not found: ' + fileName)
+    return SpreadsheetApp.open(file)
   }
+
+  Logger.log('File not found: ' + MEETING_DB_NAME)
 }
 
 function mapObject(sheet, rowKey) {
