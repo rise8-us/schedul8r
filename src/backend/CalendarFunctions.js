@@ -62,6 +62,7 @@ function scheduleEvent(meeting, startString, guestEmail) {
 
   const resource = {
     start: { dateTime: startTime.toISOString() },
+    end: { dateTime: endTime.toISOString() },
     attendees: attendees.map((email) => ({ email })),
     conferenceData: {
       createRequest: {
