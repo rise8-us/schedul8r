@@ -74,6 +74,14 @@ function scheduleEvent(meeting, startString, guestEmail) {
     },
     summary: title,
     description: description,
+    extendedProperties: {
+      private: {
+        tag: meeting.tag,
+        type: meeting.assessmentType
+      },
+      shared: {}
+    }
+
   }
 
   Calendar.Events.insert(resource, calendar.getId(), {
