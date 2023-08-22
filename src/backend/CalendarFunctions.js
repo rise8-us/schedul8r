@@ -86,6 +86,7 @@ function scheduleEvent(meeting, startString, guestEmail) {
 
   Calendar.Events.insert(resource, calendar.getId(), {
     conferenceDataVersion: 1,
+    sendUpdates: 'all'
   })
 }
 
