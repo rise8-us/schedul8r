@@ -309,6 +309,11 @@ function generateRequestorForm(timeBlock) {
 
       const requestorName = document.getElementById('fullName')
       const requestorEmail = document.getElementById('mail')
+
+      const requestor = {
+        requestorName: requestorName.value,
+        requestorEmail: requestorEmail.value
+      }
       // TODO: Handle extra info
       // const requestorExtraInfo = document.getElementById("question0");
       let shouldSchedule = true
@@ -333,7 +338,7 @@ function generateRequestorForm(timeBlock) {
 
         google.script.run
           .withSuccessHandler(() => showSuccessMark(requestorName.value, $('#hostName').text(), requestorEmail.value))
-          .scheduleEvent(meetingSettings, timeBlock, requestorEmail.value)
+          .scheduleEvent(meetingSettings, timeBlock, requestor)
       }
     })
 }
