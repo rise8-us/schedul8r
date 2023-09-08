@@ -48,13 +48,14 @@ function preview(meeting, startString) {
   return possibleEvents
 }
 
-function scheduleEvent(meeting, startString, guestEmail) {
+function scheduleEvent(meeting, startString, guest) {
+  const {requestorName, requestorEmail} = guest;
   const { description, duration, host, title } = meeting
-  const { email } = getMeetingHost(host)
+  const { email, displayName } = getMeetingHost(host)
   const calendar = getCalendar(meeting.calendar)
   const startTime = new Date(startString)
   const endTime = new Date(startTime.getTime() + duration * 60000)
-  const attendees = [email, guestEmail]
+  const attendees = [email, requestorEmail]
 
   if (meeting.hasBotGuest) {
     attendees.push(BOT_EMAIL)
@@ -72,7 +73,7 @@ function scheduleEvent(meeting, startString, guestEmail) {
         },
       },
     },
-    summary: title,
+    summary:requestorName +" and " + displayName + "  -  " + title,
     description: description,
     extendedProperties: {
       private: {
