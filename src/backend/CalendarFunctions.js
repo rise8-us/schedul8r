@@ -1,9 +1,10 @@
 // AppScript runs as single file in google.  All variables and methods are available to all other backend files.
-function getMeetingInfo(type) {
+function getMeetingInfo(type, appId) {
   type?.toLowerCase()
 
   const meeting = getMeetingDetails(type)
   meeting.host = getRandomHost(meeting)
+  meeting.appId = appId
 
   delete meeting.hosts
 
@@ -73,12 +74,13 @@ function scheduleEvent(meeting, startString, guest) {
         },
       },
     },
-    summary:requestorName +" and " + displayName + "  -  " + title,
+    summary: requestorName + " and " + displayName + "  -  " + title,
     description: description,
     extendedProperties: {
       private: {
         tag: meeting.tag,
-        type: meeting.assessmentType
+        type: meeting.assessmentType,
+        appId: meeting.appId,
       },
       shared: {}
     }
