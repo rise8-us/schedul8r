@@ -4,14 +4,37 @@ const meetingDB = openDB()
 const meetings = getSheetValues(meetingDB, 'meetings')
 const hosts = getSheetValues(meetingDB, 'hosts')
 
+
 function getMeetingDetails(meetingId) {
   return mapObject(meetings, meetingId)
 }
 
 function getRandomHost(meeting) {
-  return typeof meeting.hosts === 'string'
-    ? meeting.hosts
-    : meeting.hosts[Math.floor(Math.random() * meeting.hosts.length)]
+  if (typeof meeting.hosts === 'string') {
+    return meeting.hosts
+  }
+  let host = meeting.hosts[Math.floor(Math.random() * meeting.hosts.length)]
+
+  if (host === meeting.recentHost) {
+    host = getRandomHost(meeting)
+  }
+
+  return host
+}
+
+function setRecentHost(host, meetingId) {
+  const meetingIdIndex = getColumnIndex(meetings, 'id')
+  const recentHostIndex = getColumnIndex(meetings, 'recentHost') + 1
+  let rowIndex
+
+  for (let i = 1  ; i < meetings.length ; i++) {
+    //start at 1 as row 0 is column headers
+    if (meetings[i][meetingIdIndex] === meetingId) {
+      rowIndex = i + 1
+      break
+    }
+  }
+    meetingDB.getSheetByName('meetings').getRange(rowIndex, recentHostIndex).setValue(host)
 }
 
 function getMeetingHost(hostId) {

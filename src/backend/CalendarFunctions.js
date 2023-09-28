@@ -51,7 +51,7 @@ function preview(meeting, startString) {
 
 function scheduleEvent(meeting, startString, guest) {
   const {requestorName, requestorEmail} = guest;
-  const { description, duration, host, title } = meeting
+  const { description, duration, host, title, id } = meeting
   const { email, displayName } = getMeetingHost(host)
   const calendar = getCalendar(meeting.calendar)
   const startTime = new Date(startString)
@@ -84,13 +84,14 @@ function scheduleEvent(meeting, startString, guest) {
       },
       shared: {}
     }
-
   }
 
   Calendar.Events.insert(resource, calendar.getId(), {
     conferenceDataVersion: 1,
     sendUpdates: 'all'
   })
+
+  setRecentHost(host, id)
 }
 
 function getFreeBusyTimes(email, workWindow) {
