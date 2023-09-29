@@ -58,6 +58,8 @@ function scheduleEvent(meeting, startString, guest) {
   const endTime = new Date(startTime.getTime() + duration * 60000)
   const attendees = [email, requestorEmail]
 
+  let appId = meeting.appId ? meeting.appId : "none"
+
   if (meeting.hasBotGuest) {
     attendees.push(BOT_EMAIL)
   }
@@ -80,7 +82,7 @@ function scheduleEvent(meeting, startString, guest) {
       private: {
         tag: meeting.tag,
         type: meeting.assessmentType,
-        appId: meeting.appId,
+        appId: meeting.appId
       },
       shared: {}
     }
