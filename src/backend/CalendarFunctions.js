@@ -82,7 +82,7 @@ function scheduleEvent(meeting, startString, guest) {
       private: {
         tag: meeting.tag,
         type: meeting.assessmentType,
-        appId: meeting.appId
+        appId: appId
       },
       shared: {}
     }
