@@ -93,6 +93,7 @@ function scheduleEvent(meeting, startString, guest) {
     sendUpdates: 'all'
   })
 
+  //call greenhouse Create Scheduled Interview function
   setRecentHost(host, id)
 }
 
