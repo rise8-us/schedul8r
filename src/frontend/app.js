@@ -70,7 +70,7 @@ function fetchMeetingInfo(location) {
   google.script.run
     .withSuccessHandler(setMeetingInfo)
     .withFailureHandler((error) => console.error(error))
-    .getMeetingInfo(parameter.meetingType ?? 'default', parameter.appId)
+    .getMeetingInfo(parameter.meetingType ?? 'default', parameter.appId, parameter.interviewId)
 }
 
 function setMeetingInfo(newSettings) {

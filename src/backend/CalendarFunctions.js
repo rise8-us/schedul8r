@@ -1,10 +1,11 @@
 // AppScript runs as single file in google.  All variables and methods are available to all other backend files.
-function getMeetingInfo(type, appId) {
+function getMeetingInfo(type, appId, interviewId) {
   type?.toLowerCase()
 
   const meeting = getMeetingDetails(type)
   meeting.host = getRandomHost(meeting)
   meeting.appId = appId
+  meeting.interviewId = interviewId
 
   delete meeting.hosts
 
@@ -94,6 +95,9 @@ function scheduleEvent(meeting, startString, guest) {
   })
 
   //call greenhouse Create Scheduled Interview function
+  if(appId != 'none' && meeting.interviewId) {
+    createGreenHouseInterview(appId, meeting.interviewId, email, resource.start, resource.end, token)
+  }
   setRecentHost(host, id)
 }
 
