@@ -5,15 +5,15 @@ function createGreenHouseInterview(appId, interviewId, interviewerEmail, start, 
     //POST 'https://harvest.greenhouse.io/v1/scheduled_interviews'
     // -H "On-Behalf-Of: {greenhouse user ID}"
 
-    let apiUrl = 'https://harvest.greenhouse.io/v1/scheduled_interviews'
+    let apiUrl = 'https://harvest.greenhouse.io/v2/scheduled_interviews'
 
     let payload = {
-        "application_id": appId,
-        "interview_id": interviewId,
+        "application_id": parseInt(appId),
+        "interview_id": parseInt(interviewId),
         "interviewers": [
             {
                 "email": interviewerEmail,
-                "response_status": "declined"
+                "response_status": "accepted"
             }
         ],
         "start": start,
@@ -28,10 +28,12 @@ function createGreenHouseInterview(appId, interviewId, interviewerEmail, start, 
         method: 'post',
         contentType: 'application/json',
         payload: payloadString,
-        Authorization: 'Basic ' + token
+        headers: {
+            Authorization: 'Basic ' + token,
+            'On-Behalf-Of': 4087854007
+        }
     };
 
-    Logger.log(payload)
-    //UrlFetchApp.fetch(apiUrl, options)
+    UrlFetchApp.fetch(apiUrl, options)
 
 }
