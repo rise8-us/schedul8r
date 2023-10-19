@@ -31,6 +31,7 @@ function createGreenHouseInterview(appId, interviewId, interviewerEmail, start, 
         Authorization: 'Basic ' + token
     };
 
-    UrlFetchApp.fetch(apiUrl, options)
+    Logger.log(payload)
+    //UrlFetchApp.fetch(apiUrl, options)
 
 }
